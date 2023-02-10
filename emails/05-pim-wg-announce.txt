@@ -10,22 +10,26 @@ Reply-To:
 
 Dear PIM-WG
 
-I wanted to give a quick rundown on the changes we authors did for subject draft
-in addition to more detailed reply to the excellent review from Alvaro, but
-also highlighting some of the next text details better than it fit the review reply.
+Given how we just posted -07 of subject draft in reply to hopefully solve all
+of Alvaros feedback question, let me try to also summarize to the WG in a
+way that is not solelyl answering to the excellent textual comments by Alvaro,
+but also the underlying thought process for the text changes beyond it.
 
-And of course, we will be happy to present this also at IETF116 if there is interest.
+And of course, we will be happy to present this also at IETF116 if there is interest
+(which would pretty much say the same as what i wrote here ;-).
 
 First of all, the new version of the draft maintains pretty much the same
 target functionality of the prior version -05, but without the challenges
 uncovered by Alvaro and Stig. It also attempts to give good implementation
-guidance that is justified by requiremeents and that help to get reasonable
-impleemntations even from vendors not attending IETF (which i hope the
-operators will appreciate, even if not all of us vendors ;-)
+guidance that is justified by requiremeents and that helps to get reasonable
+implementations even from vendors not attending IETF (which i hope the
+operators will appreciate, even if not all of us vendors, but given how i often
+stumbled into especially broadband access deployments where non-IET attending
+vendor implementations where involved, we wanted to make sure of this.
 
-First of all, i wanted to say that i did join the authors team believing that
-this aggregation can give significant benefit beased on admittedly rather
-old but i fear still valid performance measurements on asserts. Packet throughput
+First of all, i wanted to say that i did join the authors team of this draft
+believing that this aggregation can give significant benefit beased on admittedly rather
+old but i fear still valid performance measurements on PIM asserts. Packet throughput
 to router control plane is AFAIk still the biggest challenge. We can not
 run BGP with a TCP MSS of 128 but we think we can do so for asserts, even though
 they're much more critical for correct reconvergence behavior. And with multicast
@@ -37,20 +41,23 @@ LANs with a punch of p2p links or even more complex with a bunch of P2MP
 VLANs. But that exactly is what we have done so  when we had to deal wih
 large (S,G) scale multicast deployments (remember, we still have Asserts with
 SSM, getting rid of  SM doesn't rid us of Asserts !).
-(ok, summary: Toerless is passionate about this. Sorry.).
+
+(ok, summary: Toerless is passionate about this. *Doh*!).
 
 Secondly, the new version hopefully solves all the functional challenges:
 
 - No need for a new PIM message type. Now doing it just with two flag bits.
-  This i think also means this needs to be classified as an Update to RFC7761
-  though, if not, then i'll be happy to change the header back.
+  This we think also means this needs to be classified as an Update to RFC7761
+  though, if not, then we'll be happy to change the header back.
 
 - The way PackedAssert messages logically work is really just a shim layer to compress
-  multiple Assert messages before they're sent to into a single PackedAssert message
-  and decompress this message logically into the original Assert messages.
+  multiple Assert messages before they're sent to via a single PackedAssert message
+  and decompress this message logically into the original Assert messages on receipt
+  before passing it to the normal RFC7761 machinery. Logically of course. Implementation
+  should of course do all type of optimizations they want.
 
 - This logic primarily gives IMHO the safety that we're not having to worry
-  about how this will change RFC7761 behavior and staate machinery - because it
+  about how this will change RFC7761 behavior and state machinery - because it
   is meant to NOT incur any such impacts.
 
 - Primarily, this behavior also makes support for receiving any type of
@@ -58,26 +65,28 @@ Secondly, the new version hopefully solves all the functional challenges:
   simple message decompression but no change in information elements or semantics 
   thereof. Therefore there is also no different set of optional encodings in the
   new PIM Hello - all implementations must be able to receive all encoding options.
+  And thats simple.
 
 - Now the difficulty for implementations is just on the encoding side IMHO,
   which is why we did hopefully provide  much improved text for that.
 
   The primary thing to understand IMHO is that data-triggered and similar
-  Asserts are highly time critical, so the should in general not be delayed.
+  Asserts are highly time critical, so they should in general not be delayed.
   The text does try to not only write that requirement, but also give one
-  guidance example of how to achieve this, because i fear without such a
-  guiding exmaple, some implementers may not know how to even do aggregation
-  for these type of asserts (hint: if you've alredy enqueued at least one
-  such assert, you have time to pack more until that other one has finished
-  serialization).
+  guidance example of how to achieve this, because we fear without such a
+  guiding example, especially non-IETF attending implementers may not know
+  how to even do aggregation for these type of asserts (hint: if you've already
+  enqueued at least one such assert, you have time to pack more until that other
+  one has finished serialization).
 
   On the other hand, especially the timer expiry based asserts are plannable,
   so their aggregation can be prepared in advance in code. -05 had some text
   about that which to me looked like at least bordering on changing the 
-  RFC7761 state machinery, so i hope the replacement text for that eliminates
+  RFC7761 state machinery, so we hope the replacement text for that eliminates
   that challenge (hint: the assert timer doesn't need arbitrary accuracy,
-  so if its set to an accuracy that's a good interval to send non-critical
-  asserts, then that will make asserts expire nicely all at the same time).
+  so if its set to an accuracy that's a good interval to send non-critical,
+  asserts, such as 100msec, then that will make asserts expire nicely all at the same time
+  and also nicely stagger asserts during steady state so they don't create terrible bursts).
 
   Alas, of course this recognition also means that an implementation that
   wants to do this all correct will need to know for each assert that it
@@ -85,11 +94,11 @@ Secondly, the new version hopefully solves all the functional challenges:
   to make these distinctions.
 
   Which kinda gets to the point that we really do not need to care about
-  individual PackedAssert first, but only total minimization of duplicate
+  individual PackedAssert first, but only about total minimization of duplicate
   IP multicast packets compared to normal Asserts. So depending on the
   existing code and how much effort an implementation can spend on the feature,
-  i wanted to make sure the spec allows for anything that will reduce duplicates.
-  I think/hope the text does cover this correctly.
+  we wanted to make sure the spec allows for anything that will reduce duplicates.
+  We think/hope the text does cover this correctly.
   
   Finally, there is the whole issue of PackedAssert packet loss potentially
   causing a lot more more duplicates than normal Assert single packet loss.
@@ -97,19 +106,19 @@ Secondly, the new version hopefully solves all the functional challenges:
   Unfortunately that issue added more requirements like DSCP marking support
   and the option to duplicate sending these asserts. DSCP marking is typically
   supported by every router, and it's just a SHOULD. Duplicate sending is something 
-  we know from triggered IGMP/MLD reports. I hope i got the spec right to only do this
-  for those asserts the sender knows will not also cause Assert replies (so
-  this resilience option does not give up more unplanned messages).
+  we know and love from triggered IGMP/MLD reports. We hope we got the spec right to 
+  require this only for those asserts the sender knows will not also cause Assert replies,
+  so this resilience option does not give up more unplanned message amplification by repliess.
 
-I think this is the gist of the functional improvements. Beside that
-there is just minor encoding changes to the encoding format so we get away with
+We think this is the gist of the functional improvements. Beside that
+there is just minor changes to the encoding format so we get away with
 just 2 flag bits  - eg. there are now just two packed encoding option, the
 one that aggregates can aggregate now both (S,G) and (*,G) assert records, and
 its especially simply to use for (*,G) records IMHO and on IPv6 to shave of
 a good amount of bits per assert record.
   
-I hope that with all these improvements we can consider the document ready to
+We hope that with all these improvements we can consider the document ready to
 go to IETF last call.
 
 Cheers
-    Toerless
+    Toerless, for the auhors

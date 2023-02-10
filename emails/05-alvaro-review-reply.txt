@@ -13,7 +13,12 @@ Hi Alvaro
 Please consider posted draft-ietf-pim-assert-packing-07 to be answering and solving
 all your concerns. And thanks a lot for the thorough review!
 
--06 was just a conversion to markdown to make comparison of -07 with the prior version easier.
+Alas, i can not figure out how to give you a simple to click URL  to compare -07
+to -06, which is just a conversion of -05 to markdown. Alas, the textual changes
+ae such that the comparison would be very helpful either because your feedback
+made us restructure the document quite a bit so that iddiff wouldn't find common text.
+
+Here is replies to your excellent points:
 
 > (1) I'm not sure how impactful this extension will be, even the Simple Type.
 
