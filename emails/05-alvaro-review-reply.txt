@@ -1,0 +1,297 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Alvaro Retana <aretana.ietf@gmail.com>
+Cc: draft-ietf-pim-assert-packing@ietf.org,
+	pim-chairs <pim-chairs@ietf.org>, pim@ietf.org,
+	Stig Venaas <stig@venaas.com>
+Bcc: 
+Subject: Re: [pim] AD Review of draft-ietf-pim-assert-packing-05
+Reply-To: 
+In-Reply-To: <CAMMESszQRWK7YHH_UY9fRCVJSe5LFum0N9smBERn4Hb-AhQF2w@mail.gmail.com>
+
+Hi Alvaro
+
+Please consider posted draft-ietf-pim-assert-packing-07 to be answering and solving
+all your concerns. And thanks a lot for the thorough review!
+
+-06 was just a conversion to markdown to make comparison of -07 with the prior version easier.
+
+> (1) I'm not sure how impactful this extension will be, even the Simple Type.
+
+I did join the draft as an author, because i think assert packing can be highly
+impactful given my past experience with performance measurements of PIM and asserts.
+Control plane performance is very often bounded by packets/sec throughput limitations.
+Try to configure a routers TCP stack to 128 bytes and see how well BGP would work.
+And BGP does not stop possibly gigabits worth of duplicate traffic, so it would be
+a lot more benign to run BGP with small packets than PIM asserts.
+
+In fact, when working in IP Multicast deployment, i did had a lot of pain persuading
+customers to convert transit subnets with multiple routers to point-to-point subnets
+to avoid asserts, and they usually came around after they had mayor incidents. But
+in general, IP Multicast is not in a situation today anymore to ask for changes in
+the basic network design that unicast does not need. That is just a recipe for IP
+multicast not to be deployed. And there are more and more cool L2 technologies in
+wired and wireless, sub-50 msec failover, TSN, WiFi quality - just to name a few that
+IMHO will cause more and more demand for multi-router subnets. We already see this
+on the broadband edge of SPs.
+
+I did try to write as little as possible to this effect into the initial parts of
+the document to still be persuasive to this point, but did not want to elaborate
+too much, because RTG protocol specs typically try to be as terse as possible
+and i wanted to spend my 'write too much detail' cycles on the actual spec part.
+
+> (1) The Aggregation Type requires new processing that is not clearly specified.
+
+I hope the processing is now much better specified. I would even think you will
+come back and say i specified too much implementation details, upon which my
+reply would be that Assert is the most obnoxious part of PIM and it will IMHO
+significantly help especially possible implementations from non-IETF attending
+vendors to be given at least some basic understanding.
+
+> (2) The PIM message type extension in rfc8736 has not been applied
+> correctly (even after Stig's comments [1]).  In general, I believe that a single
+> type.subtype should be requested with the formats identified by the
+
+The encoding was now changed to not require any new PIM message type but instead
+using just introducing Flag Bits with the existing Assert Message type, hence removing
+possible Type exhaustion pain for the value of the function concerns.
+
+> (3) Even though it is clear that a new message is defined, the text uses
+> "assert message" to refer to both the existing (rfc7761) and the new
+>  message, resulting in confusion for the reader.
+
+The terminology now uses "PackedAssert" for Assert messages that use assert
+packing via the two new Flag Bits to hopefully clearly distinguish them from
+Assert packets which are where both bits are 0. Likewise i have tried to
+make the terminology of message elements be more logical ("Foobar" Assert Records
+and the like).
+
+> (4) What about AssertCancel?  How would like look like with the new
+> formats? Please specify that as well.
+
+This actually shouldn't need explanation given how it's just a different Metric
+in a normal Assert message/record, but of course we did add the explanation.
+
+> Details:
+
+Let me skip for brevity replies to minor comments because i think i fixed
+all of the, and answer mayor comments only once when they are repeated.
+
+> [major] "a PIM router can now be the assert winner or loser for multiple
+> packed (S, G)'s"
+>
+> To be clear, each Assert Record is evaluated independently, right?  IOW, a
+> specific PIM router may not be the designated forwarder for all the Assert
+> Records in the message.
+
+Deleted.
+
+> [major] rfc7761 talks about "(S,G) something" (state, join, etc.).  Here,
+> you're really referring not just to the (S,G) state, but to the Assert
+> Record (as introduced later).  Using "(S,G)" (and "(*,G)") without a
+> descriptor attached is not correct.  Please reword.
+
+"assert record" is now introduced very early to eachieve exactly this, and
+hopefully the whole document uses it to solve these text issues.
+
+[Admittedly, i am still not 100% when/if to correctly use capitalization
+ for all of the terms used, and i'll have to re-read rfc7761 more , but i
+ hope we do not need to block progress at this step for cApiTalization.]
+
+> [major] "RECOMMENDED to use the supported method that is most efficient"
+>
+> This normative recommendation sounds more like a judgement call (around
+> efficiency) than something that is needed for interoperability -- again,
+> assuming that multiple types can be used on the LAN.
+
+That sentence is removed because i also could not figure out how to
+reprse this into something actionable, BUT: given how the whole purpose of the draft
+is to reduce as good as possible IP multicast packet duplicates, which is
+a performance metric, would push back against the implication that solely
+performance related requirements are not valid for standardization (which
+is what your sentence read like)!
+
+Aka: the "no added delay" brought up by Stig is also "just" a performance
+requirement, but of course i think it is front and center for the document.
+Difficulty is just to write text that is actionable. I hope the draft does
+this now.
+
+> [major] Related to the FB assignment, from above.  If the Assert Packing
+> Hello Option is advertised, can it be assumed that both packing types
+> defined in this document are supported?  Is there a reason to not consider
+> support for this document that way?
+
+FB is of course gone (flag bits now).
+
+I finally decided, and i hope this is now crystal clear from the text,
+that receiving and processing PackedAsserts is trivial, so that therer
+is no need to signal in PIM Hello different support level, so the
+whole bitfield is gone.
+
+Only generating PackedAsserts is what is difficult. Which is why that is
+the only major part of the spec now and it has not only no requirements
+which of the packing options to use (good luck to implementers, but i
+can see how it may be easier to pick different ones for different 
+assert triggering conditions). 
+
+> [major] How is this new message processed?
+>
+> Because this format is really the concatenation of multiple Assert
+> messages, it seems to me that there's no change in processing with respect
+> to what is specified in §4.6/rfc7761, right?  If so, please be explicit.
+
+Bingo. But the additional processing required on reception when one
+of the aggregated options is received is IMHO almost equally trivial. Worst
+case you internall convert such a packet into a sequence of (old)
+Assert packets you feed into existing code. Remember that the whole premise
+of optimizing performance with packing is that the core cost to save
+is per-packet sending/receiving cost, whereas internal number of
+processing cycles on CPU are assumed to be ample. And of course,
+in actual code this would be even simpler on reception.
+
+> [major] "extends PIM assert messages"
+
+Gone.
+
+> [major] §3, and the Hello Option talk about "types", and here you're
+> talking about "formats".  I can see the difference.  However, it would be
+> important to call out that by signaling support for the aggregated type,
+> the node is implicitly signaling support for the two formats.
+
+Gone
+
+> 437   Most fields of the specific assert message format is the same as
+> 438   section 4.2, except for the subType fields and records. When
+> 439   aggregated (S, G) records is carried in the message, the subType
+> 440   field is set to TBD3.
+>
+> [major] As mentioned above, the subType is not a different field -- it is
+> tied to the type value -- rfc8736.
+
+Gone.
+
+> [major] The "Reserved" field is not described in §4.9.6/rfc7761.
+
+Actually it is described there with a pointer to section 4.9, but i took
+this input to go through all the ascii art and add a standalone definition
+for Reserved fields that are not from the header shared with RFC7761,
+so that future enhancements would not be a problem. 
+
+> > [major] The field in the packet format includes an "(N)", but that is not
+> reflected in the description...and I don't think it's used anywhere.
+
+I think this is fine, it is used to match up the "Number of <whatever> (N)"
+field with "<whatever> field (N)", so arguably it _is_ used within the
+same picture to easily know whether a count starts from 0 or 1.
+(we also do not explain the bit positions in the ASCII pictures ;-).
+
+If you don't like it, we can remove it, but i would prefer to keep it.
+
+For what is now called "Source Aggregated PackedAssert":
+> [major] Where do the values in this Assert Record come from?
+>
+> Given that the information is the same as would be present in several
+> Assert messages with a common Source Address and the same Metric Preference
+> and Metric, it seems straight forward to specify how this Assert Record is
+> built.  Please do so.
+
+Actually i feel that this would be implemntation guidance way beyond
+what we typically do in IETF RTG docs, certainly in PIM WG RFCs, and
+also very much depending on situation of the PIM code in an implementation, but yes,
+it shouldn't be too difficult to figure out for a PIM coder. It might just
+not be something they want to do to old code and even new code could be quite
+differently structured to give generally applicable recommendations IMHO.
+
+For example if you have
+really old PIM/assert code you do not want to touch, you would actually
+create an actual new layer of software that is taking created
+assert records before they're packetized and structure them by S for
+PIM-SSM and PIM-SM SPT (S,G) flows, and by G for PIM-SM (*,G) and
+(S,G,rpbit) flows by expiry rounded windows - just as an example. But if you do have
+new code you actually feel happy to improve, you'd do something equivalent
+into that code itself without ading a separate aggregation layer set of
+data structures.
+
+> [major] How is this Assert Record processed?
+>
+> Even if the contents are similar to a group of Assert messages with a
+> common Source (etc.), the state machine in §4.6.1/rfc7761 is written per
+> (S,G) (not per (S,multiple-Gs) case).  Please specify any modification
+> (pre-processing maybe) to be done by the receiver before using that rfc7761
+> specifies.
+
+This is the whole section for receiving PackedAsserts:
+
+| ### Receiving PackedAssert messages
+|
+| Upon reception of a PackedAssert message, the PIM router logically
+| converts its payload into a sequence of assert records that are then processed
+| as if an equivalent sequence of Assert messages where received according to {{RFC7761}}.
+
+> [major] "two levels of TLVs...group record...and the...source record"
+
+Gone.
+
+> [major] Quoting Stig:
+>
+>    I don't understand why you need the second format with both RP
+>    address and source addresses. If you compare with PIM SM RFC,
+>    there is no RP address included in asserts even for a (*,G) assert.
+>
+> https://mailarchive.ietf.org/arch/msg/pim/vF3imfjNTh5XBdCkH95Mqk_VSkI
+
+The now "RP Aggregated Record" called encoding is to better compress
+(*,G) assert records. This can typically be done for all groups G
+with the same RP because the two Metric parameters are derived from
+the route to the RP. The RP field itself is actually not in the
+RFC7761 Asserts, so i tried to find a good reason why that field could
+add value, and i couldn't so i removed the RP field. But kept the name
+and explained it. There is also a second level of compression by
+allowing a number of sources=0 for each group, which is now defined to
+be equivalent to one (*=0,G) assert record,  which replaces 144
+bits of encoded IPv6 source address 0 with just 32 bits. So this
+encoding saves bits (compared to simple concatenated assert records)
+even if one does not coalesce across groups for the same RP.
+
+> [major] Where do the values for the RP and the Group Record come from?
+>
+> As was mentioned, the RP is a new element that is not present in rfc7761.
+> For the Group Record, the information is the same as would be present in
+> several Assert messages with a common Group Address and the same Metric
+> Preference and Metric, it seems straight forward to specify how it is
+> built.  Please do so.
+
+I think the previous answers on why i feel further spec details of
+how to build are not appropriate, and that RP field is gone.
+
+> [major] For the new registry:
+...
+
+This is all obsolete, there is now only an IANA ask to document the two
+new flag bits and one TBD request for the Hello Option.
+
+> [major]
+>    The general security function, such as authentication function
+...
+> Is that it?
+>
+> If so, then the text is not needed because you're pointing at the same risk
+> as rfc7761.
+
+Yes, gone.
+
+> [major] There is no in-line citation of this reference.
+
+Gone
+
+> 630 7.1. Normative References
+> ...
+> 643   [RFC8736] Venaas, S., Retana, A., "PIM Message Type Space Extension
+> 644             and Reserved Bits", RFC 8736, February 2020.
+>
+> [major] There is no in-line citation of this reference.
+  
+There is now.
+
+Thanks again!
+
+Toerless for the authors.

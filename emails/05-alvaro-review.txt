@@ -1,0 +1,1111 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Alvaro Retana <aretana.ietf@gmail.com>
+Cc: draft-ietf-pim-assert-packing@ietf.org,
+	pim-chairs <pim-chairs@ietf.org>, pim@ietf.org,
+	Stig Venaas <stig@venaas.com>
+Bcc: 
+Subject: Re: [pim] AD Review of draft-ietf-pim-assert-packing-05
+Reply-To: 
+In-Reply-To: <CAMMESszQRWK7YHH_UY9fRCVJSe5LFum0N9smBERn4Hb-AhQF2w@mail.gmail.com>
+
+On Thu, Oct 13, 2022 at 11:16:55AM -0700, Alvaro Retana wrote:
+> FYI - A copy of the review is in the archive:
+> https://mailarchive.ietf.org/arch/msg/pim/Cp4o5glUFge2b84X9CQMwCWZjAk/
+> 
+> Alvaro.
+> 
+> On October 12, 2022 at 4:47:20 PM, Alvaro Retana (aretana.ietf@gmail.com)
+> wrote:
+> 
+> 
+> 
+> Dear authors:
+> 
+> I just finished reading this document.  It needs significant work!  I have
+> a couple of high-level points to make (backed by specific comments
+> in-line):
+> 
+> (1) I'm not sure how impactful this extension will be, even the Simple
+> Type.
+>     The Aggregation Type requires new processing that is not clearly
+> specified.
+> 
+> (2) The PIM message type extension in rfc8736 has not been applied
+> correctly
+>     (even after Stig's comments [1]).  In general, I believe that a single
+>     type.subtype should be requested with the formats identified by the
+> FBs.
+> 
+>     Note that besides requesting a new type.subtype, rfc8736 also opens the
+>     possibility of using the Flag Bits in the Assert message to
+> differentiate
+>     the formats.  Was this option considered?
+> 
+> (3) Even though it is clear that a new message is defined, the text uses
+>     "assert message" to refer to both the existing (rfc7761) and the new
+>     message, resulting in confusion for the reader.
+> 
+> (4) What about AssertCancel?  How would like look like with the new
+> formats?
+>     Please specify that as well.
+> 
+> 
+> I will wait for the comments to be addressed before starting the IETF Last
+> Call.
+> 
+> Thanks!
+> 
+> Alvaro.
+> 
+> [1] https://mailarchive.ietf.org/arch/msg/pim/u9PplGrV0CbLbJE1bQjzny5T2-Y
+> 
+> 
+> [Line numers from idnits.]
+> 
+> ...
+> 51 Abstract
+> 
+> 53   In PIM-SM shared LAN networks, there is typically more than one
+> 54   upstream router. When duplicate data packets appear on the LAN from
+> 55   different routers, assert packets are sent from these routers to
+> 56   elect a single forwarder. The PIM assert packets are sent
+> 57   periodically to keep the assert state. The PIM assert packet carries
+> 58   information about a single multicast source and group, along with
+> 59   the metric-preference and metric of the route towards the source or
+> 60   RP. This document defines a standard to send and receive information
+> 61   for multiple multicast sources and groups in a single PIM assert
+> 62   message. This can be particularly helpful when there is   traffic
+> 63   for a large number of multicast groups.
+> 
+> [minor] Please expand acronyms in the abstract:
+> 
+> PIM is well-known, but PIM-SM isn't: "PIM - Sparse Mode (PIM-SM)".
+> Rendezvous Point (RP)
+> 
+> 
+> [major] s/assert packets/Assert messages/g
+> That is the terminology in rfc7761.
+> 
+> 
+> [major] s/assert message/Assert message/g
+> 
+> 
+> [] There are some details in the Abstract that are not needed at this
+> point.
+> 
+> Suggestion>
+>    In PIM - Sparse Mode (PIM-SM) shared LAN networks, there is
+>    typically more than one upstream router.  PIM Assert messages
+>    are used to elect a single forwarder for a single multicast
+>    source and group.  This document defines a mechanism to send
+>    and receive information for multiple multicast sources and groups
+>    in a single PIM message.
+> 
+> 
+> 
+> ...
+> 97 1. Introduction
+> ...
+> 108   This document defines a standard to send and receive information for
+> 109   multiple multicast sources and groups in a single PIM assert
+> 110   message. It can efficiently pack multiple PIM assert messages into a
+> 111   single message and reduce the processing pressure of   the PIM
+> 112   routers. This can be particularly helpful when there is   traffic
+> 113   for a large number of multicast groups.
+> 
+> [nit] s/defines a standard/defines a mechanism
+> 
+> 
+> [minor] s/multiple multicast sources and groups in a single PIM assert
+> message/multiple multicast sources and groups in a single PIM message
+> 
+> The new message is not the same as the current Assert message. ;-)
+> 
+> 
+> [nit] s/of   the PIM...is   traffic/of the PIM...is traffic
+> Extra spaces.
+> 
+> 
+> 
+> ...
+> 137 2. Use Cases
+> 
+> [] The specific use cases mentioned are very generic and vague -- they
+> don't provide any details.  IMO, the only section that provides useful
+> background is the Summary.  Suggestion: Leave only the Summary section in
+> the main text of the draft and, if you want to keep them, move the specific
+> use cases to an Appendix.
+> 
+> 
+> 
+> 139   PIM Assert will happen in many services where multicast is used and
+> 140   not limited to the examples described below.
+> 
+> [nit] s/PIM Assert will happen/PIM Assert messages are used
+> 
+> 
+> 
+> 142 2.1. Enterprise network
+> 
+> 144   When an Enterprise network is connected through a layer-2 network,
+> 145   the intra-enterprise runs layer-3 PIM multicast. The different sites
+> 146   of the enterprise are equivalent to the PIM connection through the
+> 147   shared LAN network. Depending upon the locations and amount of
+> 148   groups there could be many asserts on the first hop routers.
+> 
+> [nit] s/first hop/first-hop/g
+> 
+> 
+> 
+> ...
+> 158 2.3. Financial Services
+> 
+> 160   Financial services extensively rely on IP Multicast to deliver stock
+> 161   market data and its derivatives, and current multicast solution PIM
+> 162   is usually deployed. As the number of multicast flows grows, there
+> 163   are many stock data with many groups may result in many PIM asserts
+> 164   on a shared LAN network from publisher to the subscribers.
+> 
+> [nit] s/flows grows/flows grow
+> 
+> 
+> 
+> 166 2.4. IPTV broadcast Video
+> 
+> 168   PIM DR and BDR deployments are often used in host-side network for
+> 169   IPTV broadcast video services. Host-side access network failure
+> 170   scenario may be benefitted by assert packing when many groups are
+> 171   being used. According to [RFC7761] the DR will be elected to forward
+> 172   multicast traffic in the shared access network. When the DR recovers
+> 173   from a failure, the original DR starts to send traffic, and the
+> 174   current DR is still forwarding traffic. In the situation multicast
+> 175   traffic duplication maybe happen in the shared access network and
+> 176   can trigger the assert progress.
+> 
+> [nit] rfc7761 doesn't define a BDR.
+> 
+> 
+> 
+> ...
+> 185 2.6. Summary
+> ...
+> 193   Moreover as the multicast services become widely deployed, the
+> 194   number of multicast entries increases, and a large number of assert
+> 195   messages may be sent in a very short period when multicast data
+> 196   packets trigger PIM assert processing in the shared LAN networks.
+> 197   The   PIM routers need to process a large number of PIM assert small
+> 198   packets in a very short time. As a result, the device load is very
+> 199   large. The assert packet may not be processed in time or even is
+> 200   discarded, thus extending the time of traffic duplication in the
+> 201   network.
+> 
+> [nit] s/The   PIM/The PIM
+> 
+> 
+> [nit] s/or even is discarded/or even discarded
+> 
+> 
+> 
+> 203   Additionally, future backhaul, or fronthaul, networks may want to
+> 204   connect L3 across an L2 underlay supporting Time Sensitive Networks
+> 205   (TSN). The infrastructure may run DetNet over TSN. These transit L2
+> 206   LANs would have multiple upstreams and downstreams. This document is
+> 207   taking a proactive approach to prevention of possible future assert
+> 208   issues in these types of environments.
+> 
+> [] This last paragraph is ok, but not needed.
+> 
+> 
+> 
+> 210 3. Solution
+> 
+> 212   The change to the PIM assert includes two elements: the PIM assert
+> 213   packing hello option and the PIM assert packing method.
+> 
+> [minor] You're introducing 3 elements: the Hello Option, the new Assert
+> Packing message, and the mechanism itself.
+> 
+> 
+> 
+> 215   There is no change required to the PIM assert state machine.
+> 216   Basically a PIM router can now be the assert winner or loser for
+> 217   multiple packed (S, G)'s in a single assert message instead of one
+> 218   (S, G) assert at a time.
+> 
+> [] "There is no change required to the PIM assert state machine."
+> 
+> See the comments in §4.3/§4.4,
+> 
+> 
+> [minor] s/state machine/state machine [rfc7761]
+> 
+> 
+> [major] "a PIM router can now be the assert winner or loser for multiple
+> packed (S, G)'s"
+> 
+> To be clear, each Assert Record is evaluated independently, right?  IOW, a
+> specific PIM router may not be the designated forwarder for all the Assert
+> Records in the message.
+> 
+> Please clarify the operation.
+> 
+> 
+> [major] rfc7761 talks about "(S,G) something" (state, join, etc.).  Here,
+> you're really referring not just to the (S,G) state, but to the Assert
+> Record (as introduced later).  Using "(S,G)" (and "(*,G)") without a
+> descriptor attached is not correct.  Please reword.
+> 
+> My suggestion is to use "Assert Record", for example:
+> 
+>    ...a PIM router can become the designated forwarder for multiple
+>    Assert Records (Section 4)...
+> 
+> 
+> Also, rfc7761 uses "source-specific assert" (or Assert(S,G) or (S,G)
+> Assert) and "group-specific assert" (or Assert(*,G) or (*,G) Assert).
+> Please use existing terminology when possible.  Please pick one and use it
+> consistently in this document.
+> 
+> It would be ideal if the terminology section explicitly pointed out that
+> the reader is expected to be familiar with the terminology in rfc7761.
+> 
+> 
+> [major] "assert message"
+> 
+> The term "assert message" is used throughout to refer to both the existing
+> Assert message (from rfc7761) and the new one defined here.  Please use a
+> different name for the new message.  I recommend against "new Assert
+> message" (which is used 3 times) -- "PIM Assert Packing message" comes to
+> mind.
+> 
+> 
+> [nit] s/(S, G)/(S,G)/g
+> The more compact notation is what rfc7761 uses.
+> 
+> 
+> 
+> 220 3.1. PIM Assert Packing Hello Option
+> 
+> 222   The newly defined Hello Option is used by a router to negotiate the
+> 223   assert message packing capability. Assert packing can only be used
+> 224   when all PIM routers, in the same shared LAN network, support this
+> 225   capability. This document defines two packing methods. One method is
+> 226   a simple merge of the original messages and the other is to extract
+> 227   the common message fields for aggregation.
+> 
+> [minor] s/newly defined Hello Option/PIM Assert Packing Hello Option
+> (Section 4.1)
+> 
+> 
+> [minor] "used by a router to negotiate"
+> 
+> The capability is not negotiated, it is advertised.
+> 
+> 
+> [minor] "two packing methods"
+> 
+> Please (in the next sentence) include a forward reference to where the
+> methods are defined.
+> 
+> 
+> 
+> 229 3.2. PIM Assert Packing Simple Type
+> 
+> 231   In this type of packing, as described in [RFC7761], the assert
+> 232   message body is used as a record. The newly defined assert message
+> 233   can carry multiple assert records and identify the number of
+> 234   records.
+> 
+> [major] "packing, as described in [RFC7761]"
+> 
+> Packing is not described in rfc7761.  But I think you meant that the Assert
+> message is.
+> 
+> Suggestion>
+>    In this type of packing the Assert message body [rfc7761] is
+>    used as an Assert Record, as described in Section 4.2.
+> 
+> 
+> 
+> 236   This packing method is simply extended from the original assert
+> 237   packet, but, because the multicast service deployment often uses a
+> 238   small number of sources and RPs, there may be a large number of
+> 239   assert records with the same metric preference or route metric
+> 240   field, which would waste the payload of the transmitted message.
+> 
+> [major] The method is not explained.  There's a hint in the last paragraph
+> of the last section ("simple merge of the original messages"), but I
+> wouldn't call that a specification.  You don't need much, just a sentence
+> or two that is specific on what to do -- a pointer to the format in §4.2
+> would also help.
+> 
+> 
+> [minor] This last paragraph doesn't seem to belong in this section as it is
+> really a justification for the next one.
+> 
+> 
+> 
+> 242 3.3. PIM Assert Packing Aggregation Type
+> 
+> 244   When the source or RP addresses, in the actual deployment of the
+> 245   multicast service, are very few, this type of packing will combine
+> 246   the records related to the source address or RP address in the
+> 247   assert message.
+> 
+> [minor] s/, in the actual deployment of the multicast service,/
+> 
+> 
+> [minor] "are very few"
+> 
+> Does this method only apply to a "few" sources/RPs?  What is a few?
+> 
+> Suggestion>
+>    This type of packing combines the records related to a source
+>    or RP in the Assert message.
+> 
+> Also, note that the concept of a record is not introduced until later...
+> 
+> 
+> 
+> 249   * A (S, G) assert only can contain one SPT (S, G) entry, so it can
+> 250   be aggregated according to the same source address, and then all SPT
+> 251   (S, G) entries corresponding to the same source address are merged
+> 252   into one assert record.
+> 
+> [major] Related to the name of the new message (mentioned before) -- the
+> text above is confusing because it seems to contradict itself until one
+> realizes that you're referring to two different assert messages: "assert
+> only can contain one SPT (S, G) entry...then all SPT (S, G) entries...are
+> merged into one assert record".
+> 
+> 
+> [minor] "SPT (S, G) entry"
+> 
+> I haven't seen that terminology used anywhere.  It seems to me that "(S,G)
+> entry" would be enough.
+> 
+> 
+> 
+> 254   * A (*, G) assert may contain a (*, G) entry or a RPT (S, G) entry,
+> 255   and both entry types actually depend on the route to the RP. So it
+> 256   can be aggregated further according to the same RP address, and then
+> 257   all (*, G) and RPT (S, G) entries corresponding to the same RP
+> 258   address are merged into one assert record.
+> 
+> [nit] s/(*, G)/(*,G)/g
+> The more compact notation is what rfc7761 uses.
+> 
+> [minor] "RPT (S, G) entry"
+> 
+> I haven't seen that terminology used anywhere.  It seems to me that "(S,G)
+> entry" would be enough.  However, it is also a relatively obscure detail
+> that the source address can optionally be included if the RPTbit is set.
+> 
+> I see that the terminology is used later on -- if needed, please define the
+> term in the terminology section.
+> 
+> 
+> 
+> 260   This method can optimize the payload of the transmitted message by
+> 261   merging the same field content, but will add the complexity of the
+> 262   packet encapsulation and parsing.
+> 
+> [major] As in the last section, the method is not explained.  The records
+> are combined, but how?
+> 
+> 
+> 
+> 264 3.4. PIM Assert Timer
+> 
+> 266   As described in section 4.6 in RFC7761, the Assert Timer function of
+> 267   each (S,G) and (*,G) is not changed. After the Assert Message
+> 268   Packing function defined in this document is enabled, when the first
+> 269   AT of a (S,G) or (*,G) is expired, in order to carry much more
+> 270   assert information in this message, some of other (S,G) or (*,G) may
+> 271   be included in the same message, even though their ATs have not been
+> 272   expired. After the assert message packing, the ATs of all the (S,G)
+> 273   or (*,G), that are packed in the same message, are all reset. That
+> 274   is after the packed assert messages is sent, the ATs of the packed
+> 275   (S,G) or (*,G) will be set with the same value.
+> 
+> [minor] This paragraph seems very verbose.
+> 
+> Suggestion>
+>    The operation of the Asset Timer (AT), as described in Section
+>    4.6 of [RFC7761], is not changed.
+> 
+> 
+> After making this suggestion I found a message from Stig about packing
+> [1].  In it, he made the point that "one should not delay sending asserts
+> in order to achieve optimal packing...there is no harm in sending some
+> asserts a few seconds earlier to achieve better packing."
+> 
+> I don't see Stig's suggestion reflected in the text above.
+> 
+> Suggestion 2>
+> 
+>    The operation of the Asset Timer (AT), as described in Section
+>    4.6 of [RFC7761], is not changed.  In order to include more
+>    Assert Records in a single message, the Assert Packing message
+>    MAY include Assert Records for which the AT hasn't expired.
+> 
+> [1] https://mailarchive.ietf.org/arch/msg/pim/Zl4vO4p3ZOL61oKxDBYFHiypKGQ
+> 
+> 
+> 
+> 277 3.5. PIM Assert Format Selection
+> 
+> 279   An implementation MUST NOT send assert messages using a packing
+> 280   type, unless all routers on the LAN have indicated support for the
+> 281   type. If both packing types are supported, then it is left to the
+> 282   implementation whether to use assert packing and which packing type
+> 283   to use. It is RECOMMENDED to use the supported method that is most
+> 284   efficient. The Aggregation Packing Format is likely to be the most
+> 285   efficient if the assert message is to include multiple records
+> 286   having the same source address or RP address.
+> 
+> [major] Can multiple types be used at the same time (if supported)?
+> 
+>    If both packing types are supported, then it is left to the
+>    implementation whether to use assert packing and which packing
+>    type to use. It is RECOMMENDED to use the supported method that
+>    is most efficient.
+> 
+> If left to the implementation, and assuming the possibility of multiple
+> implementations on the same LAN, then it looks like multiple types, or even
+> (old) Assert messages can be used.  Is that correct?  Please be explicit.
+> 
+> 
+> [major] "RECOMMENDED to use the supported method that is most efficient"
+> 
+> This normative recommendation sounds more like a judgement call (around
+> efficiency) than something that is needed for interoperability -- again,
+> assuming that multiple types can be used on the LAN.
+> 
+> s/RECOMMENDED/recommended
+> 
+> 
+> 
+> 288   The regular RFC7761 assert format is still allowed to be used. For
+> 289   example the assert only needs to be sent for a single (S, G).
+> 
+> 291 4. Packet Format
+> 
+> 293   This section describes the format of new PIM messages introduced by
+> 294   this document.
+> 
+> [nit] The first one is not a message.  s/messages/extensions
+> 
+> 
+> 
+> 296 4.1. PIM Assert Packing Hello Option
+> 
+> [minor] Please add a note to indicate where the format of the Hello Options
+> is defined (Section 4.9.2/rfc7761).
+> 
+> 
+> 
+> 298    0                   1                   2                   3
+> 299    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 300   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 301   |      OptionType = TBD         |      OptionLength = 1         |
+> 302   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 303   |  Packing_Type |
+> 304   +-+-+-+-+-+-+-+-+
+> 
+> [minor] Please include figure numbers for all packet formats.
+> 
+> 
+> 
+> ...
+> 310   - Packing_Type: The specific packing mode is determined by the value
+> 
+> 312      of this field:
+> 
+> [nit] There's a extra line above.
+> 
+> 
+> [nit] The indentation of the paragraphs below needs to be fixed so that all
+> the lines are left-aligned.
+> 
+> 314      When the first bit from the right is set to 1: indicates simple
+> 315   packing type as described in section 2.2
+> 
+> 317      When the second bit from the right is set to 1: indicates
+> 318   aggregating packing type as described in section 2.3
+> 
+> [minor] The sections are in §3.*, not §2.*.
+> 
+> Also, §3.3 uses "PIM Assert Packing Aggregation Type".
+> 
+> 
+> 
+> 320      3-8 bits: reserved for future
+> 
+> [major] The Packing_Type field seems to be a bitfield.  Please define the
+> field as such and the bits correspondingly -- maybe even name them (S-bit,
+> A-bit, for example).
+> 
+> Indicate what this field means: for example, it indicates which packing
+> type(s) is supported.  BTW, is it "packing type" or "packing mode" --
+> "mode" is only used here.
+> 
+> Also, because the sender selects the packing type, setting a bit to 1 means
+> that the node is willing and able to both send and receive those types.
+> IOW, if both types are indicated, it is possible for NodeA to select Type 1
+> and for NodeB to use Type 2 (and or rfc7761 Assert messages).  Please
+> indicate in the definition what setting a bit implies.
+> 
+> 
+> [nit] s/for future/for future use
+> 
+> 
+> 
+> 322     The node may support multiple packing types. The node MUST set the
+> 323   bits indicating which types they support. They MUST set both bits if
+> 324   they support both type 1 and type 2. The format used MUST be a
+> 325   format supported by all routers on the LAN, see section 3.5 for
+> 326   details.
+> 
+> [] The first couple of sentences talk about the setting, while the last one
+> about selecting a common format.  The first part belongs in the description
+> of the new Option.  The second part is about the use (so it should be
+> formatted with a "normal" indentation).
+> 
+> The information about type 1 and 2 sounds more like an example about this
+> document (which only defines those 2 types).
+> 
+> Note that §3.5 is not explicit enough (see my comments there)...and it
+> makes a recommendation that seems like a judgement call.
+> 
+> 
+> 
+> 328     Once the packing format type is selected, this type of coding is
+> 329   used for Assert message packing.
+> 
+> [] This sentence sounds as if all the nodes reach a single agreement...but
+> the advertisement doesn't work that way.
+> 
+> 
+> 
+> 331     If not all nodes support a same packing format, then Assert
+> 332   message format defined in [RFC7761] is used.
+> 
+> [] Again, rfc7761 Assert messages can still be used, right?  That is what
+> §3.5 says.
+> 
+> Suggestion>
+>       Multiple packing types may be supported.  The bits corresponding
+>       to all the supported packing types MUST be set.
+> 
+>    The packing type used on a link MUST be supported by all nodes.
+> 
+> 
+> 
+> 334 4.2. PIM Assert Simple Packing Format
+> 
+> [minor] Before presenting the format and defining the contents, please
+> indicate where the PIM messages (and their headers) are defined.  In this
+> case, rfc7791 and rfc8736.
+> 
+> 
+> 
+> 336    0                   1                   2                   3
+> 337     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 
+> [nit] The bit numbers need to be aligned.
+> 
+> 
+> 
+> ...
+> 369    Type
+> 
+> 371       The new Assert Type values TBD1.
+> 
+> 373    Type.SubType
+> 
+> 375       The new Assert Type.SubType value TBD2.
+> 
+> [major] Type and Type.SubType are not different values -- rfc8736.
+> 
+> 
+> [major] It is not clear whether all the "different" formats use a different
+> type.subtype or the same.
+> 
+> It seems to me that using the same type.subtype and then differentiating
+> which Assert Record type is used in the FB would be an ideal use of the new
+> encoding.  For example, 3 out of the 4 bits can be assigned to the packing
+> formats -- or the FB can be defined as a hex number providing a total of 16
+> options.
+> 
+> Note that the descriptions already seem to assume that the subtype can be
+> used as a discriminator...use the FB instead.
+> 
+> 
+> 
+> 377    FB
+> 
+> 379      Flag Bits field. This field is not used for now, it may be used
+> 380    in the future.
+> 
+> [major] Related to the FB assignment, from above.  If the Assert Packing
+> Hello Option is advertised, can it be assumed that both packing types
+> defined in this document are supported?  Is there a reason to not consider
+> support for this document that way?
+> 
+> 
+> 
+> ...
+> 387    The format of each record is the same as the PIM assert message body
+> 388    of section 4.9.6 in [RFC7761].
+> 
+> [minor] s/record/Assert Record/g
+> Please be consistent.
+> 
+> 
+> 
+> 390     0                   1                   2                   3
+> 391     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 392    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 393    |              Group Address (Encoded-Group format)             |
+> 394    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 395    |            Source Address (Encoded-Unicast format)            |
+> 396    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 397    |R|                      Metric Preference                      |
+> 398    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 399    |                             Metric                            |
+> 400    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 
+> [major] How is this new message processed?
+> 
+> Because this format is really the concatenation of multiple Assert
+> messages, it seems to me that there's no change in processing with respect
+> to what is specified in §4.6/rfc7761, right?  If so, please be explicit.
+> 
+> Suggestion>
+>    Each Assert Record is independently processed according to the
+>    specification in §4.6 of [RFC7761].
+> 
+> 
+> 
+> 402 4.3. PIM (S,G) Assert Aggregation Packing Format
+> 
+> 404   This method also extends PIM assert messages to carry multiple
+> 405   records. But the records are divided for (S, G) and (*, G).
+> 
+> [major] "extends PIM assert messages"
+> 
+> This is not an extended message, it's a new message!
+> 
+> 
+> [major] §3, and the Hello Option talk about "types", and here you're
+> talking about "formats".  I can see the difference.  However, it would be
+> important to call out that by signaling support for the aggregated type,
+> the node is implicitly signaling support for the two formats.
+> 
+> 
+> 
+> ...
+> 437   Most fields of the specific assert message format is the same as
+> 438   section 4.2, except for the subType fields and records. When
+> 439   aggregated (S, G) records is carried in the message, the subType
+> 440   field is set to TBD3.
+> 
+> [major] As mentioned above, the subType is not a different field -- it is
+> tied to the type value -- rfc8736.
+> 
+> 
+> [] To the point above about a single type.subtype, the format of the
+> message is the same -- only the format of the Assert Record changes.
+> 
+> 
+> 
+> ...
+> 445      0                   1                   2                   3
+> 446      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 447     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 448     |            Source Address (Encoded-Unicast format)            |
+> 449     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 450     |0|                      Metric Preference                      |
+> 451     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 452     |                             Metric                            |
+> 453     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 454     |        Number of Groups (N)   |           Reserved            |
+> 455     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 456     |                 Group Address 1 (Encoded-Group format)        |
+> 457     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 458     |                 Group Address 2 (Encoded-Group format)        |
+> 459     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 460     |                             .                                 |
+> 461     |                             .                                 |
+> 462     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 463     |                 Group Address N (Encoded-Group format)        |
+> 464     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 
+> 466   Source Address, Metric Preference, Metric and Reserved
+> 
+> 468       Same as [RFC7761] Section 4.9.6, but the source address MUST NOT
+> 469   be set to zero.
+> 
+> [nit] The indenting needs to be fixed in this section too.
+> 
+> 
+> [minor] s/Same as [RFC7761] Section 4.9.6/As specified in Section 4.9.6 of
+> [RFC7761]/g
+> 
+> 
+> [major] The "Reserved" field is not described in §4.9.6/rfc7761.
+> 
+> 
+> 
+> 471   Number of Groups
+> 
+> 473       The number of group addresses corresponding to the source address
+> 474   field in the (S, G) assert record.
+> 
+> [nit] s/ in the (S, G) assert record./.
+> 
+> 
+> [major] The field in the packet format includes an "(N)", but that is not
+> reflected in the description...and I don't think it's used anywhere.
+> 
+> 
+> 
+> 476   Group Address
+> 
+> 478       Same as [RFC7761] Section 4.9.6, but there are multiple group
+> 479   addresses in the (S, G) assert record.
+> 
+> [minor] The important part here is the definition of the field -- it is a
+> given that multiple addresses are present.
+> 
+> s/.../As specified in Section 4.9.6 of [RFC7761].
+> 
+> 
+> [major] Where do the values in this Assert Record come from?
+> 
+> Given that the information is the same as would be present in several
+> Assert messages with a common Source Address and the same Metric Preference
+> and Metric, it seems straight forward to specify how this Assert Record is
+> built.  Please do so.
+> 
+> 
+> [major] How is this Assert Record processed?
+> 
+> Even if the contents are similar to a group of Assert messages with a
+> common Source (etc.), the state machine in §4.6.1/rfc7761 is written per
+> (S,G) (not per (S,multiple-Gs) case).  Please specify any modification
+> (pre-processing maybe) to be done by the receiver before using that rfc7761
+> specifies.
+> 
+> 
+> 
+> 481 4.4. PIM (*,G) Assert Aggregation Packing Format
+> 
+> 483    0                   1                   2                   3
+> 484     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 
+> [nit] The formatting needs fixing.
+> 
+> 
+> 
+> 485    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 486    |PIM Ver| Type  |SubType|   FB  |           Checksum            |
+> 487    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 488    |      Count    |                  Reserved                     |
+> 489    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 490    |                                                               |
+> 491    .                                                               .
+> 492    .                        Assert Record [1]                      .
+> 493    .                                                               .
+> 494    |                                                               |
+> 495    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 496    |                                                               |
+> 497    .                                                               .
+> 498    .                        Assert Record [2]                      .
+> 499    .                                                               .
+> 500    |                                                               |
+> 501    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 502    |                               .                               |
+> 503    .                               .                               .
+> 504    |                               .                               |
+> 505    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 506    |                                                               |
+> 507    .                                                               .
+> 508    .                        Assert Record [M]                      .
+> 509    .                                                               .
+> 510    |                                                               |
+> 511    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 
+> 513   Most fields of the specific assert message format is the same as
+> 514   section 4.2, except for the subType fields and records. When
+> 515   aggregated (*, G) records is carried in the message, the subType
+> 516   field is set to TBD4.
+> 
+> [major] As mentioned above, the subType is not a different field -- it is
+> tied to the type value -- rfc8736.
+> 
+> 
+> [] To the point above about a single type.subtype, the format of the
+> message is the same -- only the format of the Assert Record changes.
+> 
+> 
+> 
+> 518   The (*, G) assert records are organized in the same RP address and
+> 519   are divided into two levels of TLVs. The first level is the group
+> 520   record of the same RP address, and the second level is the source
+> 521   record of the same multicast group address, including (*, G) and RPT
+> 522   (S, G), and the specific message format is:
+> 
+> [nit] s/in the same RP/by the same RP
+> 
+> 
+> [major] "two levels of TLVs...group record...and the...source record"
+> 
+> The message format below only shows "Group Records".  ??
+> 
+> 
+> 
+> 524     0                   1                   2                   3
+> 525     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 526    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 527    |             RP Address (Encoded-Unicast format)               |
+> 528    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 529    |1|                      Metric Preference                      |
+> 530    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 531    |                             Metric                            |
+> 532    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 533    |   Number of Group Records(O)  |           Reserved            |
+> 534    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 535    |                                                               |
+> 536    .                                                               .
+> 
+> 538    .                        Group Record [1]                       .
+> 539    .                                                               .
+> 540    |                                                               |
+> 541    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 542    |                                                               |
+> 543    .                                                               .
+> 544    .                        Group Record [2]                       .
+> 545    .                                                               .
+> 546    |                                                               |
+> 547    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 548    |                               .                               |
+> 549    .                               .                               .
+> 550    |                               .                               |
+> 551    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 552    |                                                               |
+> 553    .                                                               .
+> 554    .                        Group Record [O]                       .
+> 555    .                                                               .
+> 556    |                                                               |
+> 557    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 558   RP Address
+> 
+> 560       The address of RP corresponding to all of the contained group
+> 561   records. The format for this address is given in the encoded
+> 562   unicast address in [RFC7761] Section 4.9.1
+> 
+> [minor] s/given in the encoded unicast address in [RFC7761] Section
+> 4.9.1/described in Section 4.9.1 of [RFC7761].
+> 
+> 
+> [major] Quoting Stig:
+> 
+>    I don't understand why you need the second format with both RP
+>    address and source addresses. If you compare with PIM SM RFC,
+>    there is no RP address included in asserts even for a (*,G) assert.
+> 
+> https://mailarchive.ietf.org/arch/msg/pim/vF3imfjNTh5XBdCkH95Mqk_VSkI
+> 
+> 
+> I didn't see a reply to this message -- I also don't understand. :-(
+> 
+> 
+> 
+> 564   Metric Preference, Metric and Reserved
+> 
+> 566       Same as [RFC7761] Section 4.9.6
+> 
+> [] Same comment as above.
+> 
+> 
+> 
+> 568   Number of Group Records
+> 
+> 570       The number of packed group records. A record consists of a group
+> 571   address and a source address list.
+> 
+> [major] The field in the packet format includes an "(O)", but that is not
+> reflected in the description...and I don't think it's used anywhere.
+> 
+> 
+> [minor] s/.../The number of Group Records.
+> 
+> Please be consistent with the naming.
+> 
+> 
+> 
+> 573   The format of each group record is:
+> 
+> 575     0                   1                   2                   3
+> 576     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 577    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 578    |              Group Address (Encoded-Group format)             |
+> 579    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 580    |        Number of Sources (P)  |           Reserved            |
+> 581    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 582    |              Source Address 1 (Encoded-Unicast format)        |
+> 583    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 584    |              Source Address 2 (Encoded-Unicast format)        |
+> 585    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 586    |                             .                                 |
+> 587    |                             .                                 |
+> 588    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 589    |              Source Address P (Encoded-Unicast format)        |
+> 590    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 
+> 592   Group Address and Reserved
+> 
+> 594       Same as [RFC7761] Section 4.9.6
+> 
+> 596   Number of Sources
+> 
+> 598       The number of source addresses corresponding to the group
+> 599   address field in the group record.
+> 
+> [major] The field in the packet format includes an "(P)", but that is not
+> reflected in the description...and I don't think it's used anywhere.
+> 
+> 
+> [minor] s/.../The number of Source Addresses.
+> 
+> 
+> 
+> 601   Source Address
+> 
+> 603       Same as [RFC7761] Section 4.9.6, but there are multiple source
+> 604   addresses in the group record.
+> 
+> [minor] The important part here is the definition of the field -- it is a
+> given that multiple addresses are present.
+> 
+> s/.../As specified in Section 4.9.6 of [RFC7761].
+> 
+> 
+> [major] Where do the values for the RP and the Group Record come from?
+> 
+> As was mentioned, the RP is a new element that is not present in rfc7761.
+> For the Group Record, the information is the same as would be present in
+> several Assert messages with a common Group Address and the same Metric
+> Preference and Metric, it seems straight forward to specify how it is
+> built.  Please do so.
+> 
+> 
+> [major] How is this format processed?
+> 
+> Even if the contents are similar to a group of Assert messages with a
+> common Group (etc.), the state machine in §4.6.2/rfc7761 is written for the
+> general (*,G) case (or per (S,G), but not the (multiple-S,G) case), and it
+> seems to derive RP(G) locally (not learn it).  Please specify the mechanism
+> that needs to be followed to process this information.
+> 
+> 
+> 
+> 606 5. IANA Considerations
+> 
+> 608   This document requests IANA to assign a registry for PIM assert
+> 609   packing Hello Option in the PIM-Hello Options and new PIM assert
+> 610   packet type and subtype. The assignment is requested permanent for
+> 611   IANA when this document is published as an RFC. The string TBD
+> 612   should be replaced by the assigned values accordingly.
+> 
+> [major] For the new registry:
+> 
+> - request IANA to create one (they are not assigned)
+> - what is the registration policy (rfc8126)
+> - please include a table showing structure of the registry and the current
+> assignments
+> - where should the registry be located?
+> 
+> 
+> [major] Which registry should the type.subtype be assigned from?
+> 
+> Note that §3.* seems to specify multiple values -- see my comments there.
+> 
+> 
+> [major] "The assignment is requested permanent for IANA when this document
+> is published as an RFC."
+> 
+> Not needed, that is what the requests are for.
+> 
+> 
+> [major] "string TBD"
+> 
+> - there are multiple "TBD" strings throughout
+> - the replacement of the string is not an instruction to IANA.  In general,
+> that will be taken care of through the RFC Editor process.
+> 
+> 
+> 
+> 614 6. Security Considerations
+> 
+> 616   As described in section 6.1 in RFC7761, the forged assert message
+> 617   may cause the legitimate designated forwarder to stop forwarding
+> 618   traffic to the LAN. And the packed function defined in this
+> 619   document, may make this situation worse, because it will affect
+> 620   multiple flows with a single packed assert. That is in case one
+> 621   forged packed assert message is accept, all the (S,G) or (*,G)
+> 622   carried in this message may be stopped forwarding from one or more
+> 623   legitimate designated forwarders. The general security function,
+> 624   such as authentication function defined in RFC7761, or the necessary
+> 625   PIM filtering method, will do good help to avoid the forged assert
+> 626   message.
+> 
+> [minor] Please reword to indicate cause and effect.
+> 
+> Suggestion>
+> 
+>    The security considerations of [RFC7761] apply to the extensions
+>    defined in this document.
+> 
+>    This document packs multiple Assert Records in a single message.
+>    As described in Section 6.1 of [RFC7761], a forged Assert message
+>    could cause the legitimate designated forwarder to stop forwarding
+>    traffic to the LAN.  The effect may be amplified when using the
+>    Assert Packing message.
+> 
+> 
+> [major]
+>    The general security function, such as authentication function
+>    defined in RFC7761, or the necessary PIM filtering method, will
+>    do good help to avoid the forged assert message.
+> 
+> Authentication doesn't address the case of a rogue node: one that has been
+> taken over by an attacker.
+> 
+> I'm not sure what the "necessary PIM filtering method" is, but I'm guessing
+> that you may be referring to this from §6.2/rfc7761:
+> 
+>    A PIM router SHOULD provide an option to limit the set of neighbors
+>    from which it will accept Join/Prune, Assert, and Hello messages.
+>    Either static configuration of IP addresses or an IPsec security
+>    association MAY be used.
+> 
+> Is that it?
+> 
+> If so, then the text is not needed because you're pointing at the same risk
+> as rfc7761.
+> 
+> 
+> 
+> ...
+> 630 7.1. Normative References
+> ...
+> 643   [RFC8736] Venaas, S., Retana, A., "PIM Message Type Space Extension
+> 644             and Reserved Bits", RFC 8736, February 2020.
+> 
+> [major] There is no in-line citation of this reference.
+> 
+> 
+> [EoR -05]
