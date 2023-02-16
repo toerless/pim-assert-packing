@@ -1,0 +1,645 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Alvaro Retana <aretana.ietf@gmail.com>
+Cc: pim-chairs <pim-chairs@ietf.org>,
+	draft-ietf-pim-assert-packing@ietf.org,
+	Stig Venaas <stig@venaas.com>, pim@ietf.org
+Bcc: 
+Subject: Re: [pim] AD Review of draft-ietf-pim-assert-packing-05
+Reply-To: 
+In-Reply-To: <CAMMESsxdncmo1hmNnbZuTK9_OB8EYxcaQ=EwXEOJ=ZNJcbx=mw@mail.gmail.com>
+
+Thanks a lot Alvaro for the quick turnaround and fix 
+suggestions.
+
+The new version -08 just posted should resolve all issues raised by you
+according to your suggestions / asks except for the following two:
+ 
+1. I have written the ASCII header format from RFC8736 figure 2
+/ seection 4 (which is also specifying how to set/receive them),
+in the way draft-ietf-pim-null-register-packing-13 style also uses it:
+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |PIM Ver| Type  |7 6 5 4 3 2|A|P|           Checksum            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+(aka: insted of writing 0 1 instead of A and P).
+
+We should probably agree on both docs that this is the right way .
+
+2. I've kept the SHOULD NOT (send only non-PackedAssert messages in all situations).
+   see inline explanations why.
+
+Cheers
+    Toerless
+
+On Wed, Feb 15, 2023 at 07:52:16PM -0600, Alvaro Retana wrote:
+> On February 10, 2023 at 12:01:26 PM, Toerless Eckert wrote:
+> 
+> 
+> Toerless:
+> 
+> Hi!
+> 
+> 
+> > Please consider posted draft-ietf-pim-assert-packing-07 to be answering and
+> > solving all your concerns. And thanks a lot for the thorough review!
+> 
+> The update looks a lot clearer, thanks!
+> 
+> I still have some comments inline for -07 (below).  I provided text
+> suggestions for most of them.
+> 
+> To start the IETF Last Call, I need you to submit a new draft without
+> the Updates tag and without references to RFC3973.  To accelerate the
+> process, you can consider all other points as last call comments.
+> 
+> Thanks!
+> 
+> Alvaro.
+> 
+> 
+> [Line numbers from idnits.]
+> 
+> 
+> 2	PIM                                                          Y. Liu, Ed.
+> 3	Internet-Draft                                              China Mobile
+> 4	Updates: RFC7761, RFC3973 (if approved)                       M. McBride
+> 
+> [major] No.  This draft doesn't formally Update either.
+
+Let me try to answer my own unanswered question, why its not an update to
+RFC7761: Because the only upgrade questionable change this draft does are the
+two flag bits, but RFC8736 already updated RFC7761 and converted that
+resserved space into a registry, so now we only need to hook into the registry,
+no updates required.
+
+Bingo ? 
+
+> ...
+> 193	3.1.  PIM Hello Assert Packing Option
+> 
+> 195	   The PIM Assert Packing Hello Option (Section 4.1) is used to announce
+> 196	   support for the assert packing mechanisms specified in this document.
+> 197	   PackedAssert messages (Section 3.2) MUST only be sent when all PIM
+> 198	   routers in the same subnet announce this option.
+> 
+> [major] "MUST only"
+> 
+> I've never liked this construct because it seems to require an
+> optional extension.  In this case, the PackedAssert can only be used
+> when the Option is announced by everyone -- but even then it is not
+> required, right?  IOW, even if everyone supports PackedAsserts a
+> router may chose to send the old ones.
+> 
+> Suggestion>
+>    PackedAssert messages (Section 3.2) MUST NOT be used unless all
+>    PIM routers in the same subnet announce this option.
+
+Hah! indeed. Thanks.
+
+> 
+> 200	3.2.  Assert Packing Message Formats
+> 
+> 202	   The message body of an {RFC7761}}, Section 4.9.6, PIM Assert message,
+> 203	   except for its first four bytes of header, describes the parameters
+> 204	   of a (*,G) or (S,G) assert through the following information
+> 205	   elements: R(PT), Source Address, Group Address, Metric and Metric
+> 206	   Preference.  This document calls this information an assert record.
+> 
+> [] The "an {RFC7761}}, Section 4.9.6, PIM Assert message" formatting
+> caught my attention...
+
+fixed. why didn't kramdown catch this... sigh.
+
+> Suggestion>
+>    The PIM Assert message, as defined in Section 4.9.6 of [RFC7761],
+>    describes the parameters of a (*,G) or (S,G) assert through the
+>    following information elements: R(PT), Source Address, Group
+>    Address, Metric and Metric Preference. This document calls this
+>    information an assert record.
+> 
+> Expand RPT.
+
+fixed.
+
+> 208	   Assert packing introduces two new PIM Assert message encodings
+> 209	   through the allocation and use of two [RFC8736] specified flags in
+> 210	   the PIM Assert message header, the P)acked and the A)ggregated flag.
+> 
+> [] "two [RFC8736] specified flags in the PIM Assert message header"
+> 
+> This sounds as if the new flags are specified in rfc8736.  Also, I
+> really don't like the notation "P)acked and the A)ggregated".
+> 
+> Suggestion>
+>    Assert packing introduces two new PIM Assert message encodings
+>    through the allocation and use of two flags in the PIM Assert
+>    message header [RFC8736], the Packed (P) and the Aggregated (A)
+>    flags.
+
+fixed.
+
+> 212	   If the P)acked flag is 0, the message is a (non-packed) PIM Assert
+> 213	   message as specified in [RFC7761].  See Section 4.2.  In this case,
+> 214	   the A)ggregated flag MUST be set to 0.  If the P)acked flag is 1),
+> 215	   then the message is called a PackedAssert message and the type and
+> 216	   hence encoding format of the payload is determined by the A)ggregated
+> 217	   flag.
+> 
+> [major] "A)ggregated flag MUST be set to 0"
+> 
+> What should a receiver do if P=0 but A=1?  I see two options: assume
+> that A was set by mistake and parse only one record, or ignore the
+> message.
+
+Fixed to:
+    In this case, the (A) flag MUST be set to 0, and MUST be ignored on receipt. 
+
+i'll try to change all occurances of e.g. A)ggregated to just (A) in the
+text, likewise for (P) given how you wanted that format to be introduced/used
+above.
+> 
+> 
+> 
+> ...
+> 246	   RP Aggregation Records provide a more compact encoding than the
+> 247	   Simple PackedAssert message format for (*,G) flows.  The Source
+> 248	   Address option is optionally used by [RFC7761] assert procedures to
+> 249	   indicate the source(s) that triggered the assert, otherwise it is 0.
+> 
+> [] s/option is optionally/is optionally
+
+fixed.
+
+> ...
+> 258	3.3.  PackedAssert Mechanism
+> 
+> 260	   PackedAsserts do not change the [RFC7761] PIM assert state machine
+> 261	   specification.  Instead, sending and receiving of PackedAssert
+> 262	   messages as specified in the following subsections is logically a
+> 263	   layer in between sending/receiving of Assert messages and
+> 264	   serialization/deserialization of their respective packets.  There is
+> 265	   no change in in the information elements of the transmitted
+> 266	   information elements constituting the assert records not their
+> 267	   semantics.  Only the compactness of their encoding.
+> 
+> [nit] s/in in/in
+
+fixed
+
+> [nit] s/not their/nor their
+
+fixed.
+
+> 269	3.3.1.  Sending PackedAssert messages
+> 
+> 271	   When using assert packing, the regular [RFC7761] Assert message
+> 272	   encoding with A=0 and P=0 is still allowed to be sent.  Router are
+> 273	   free to choose which PackedAssert message type they send.  If a
+> 274	   router chooses to send PacketAssert messages, then it MUST comply to
+> 275	   the requirements in the remainder of this section.  Implementations
+> 276	   SHOULD NOT send only Asserts (but no PackedAsserts) in all cases when
+> 277	   all routers on the LAN do support Assert Packing.
+> 
+> [nit] s/Router are/Routers are
+
+fixed
+
+> [major] "If a router chooses to send PacketAssert messages, then it
+> MUST comply to the requirements in the remainder of this section."
+> 
+> This sentence is not needed because otherwise we don't need this
+> document.  It is implicit that PackedAsserts are specified here.
+> Please take it out.
+
+fixed.
+
+> [major] "Implementations SHOULD NOT send only Asserts (but no
+> PackedAsserts) in all cases when all routers on the LAN do support
+> Assert Packing."
+> 
+> I guess that you mean that (at least) there should be a mix of Asserts
+> and PackedAsserts, right?
+
+Yes.
+
+> If so, how do you normatively enforce that?
+
+With the sentence i wrote !! 
+If you have a better sentence please suggest.
+
+>  IOW, if "Assert message encoding with A=0 and P=0 is still allowed to
+> be sent" then this seems like a contradiction.
+
+You're still allowed to send Asserts (A=0, P=0), but you SHOULD send at least
+some PackedAssert under some condition.
+
+> This sentence should be removed, it should be made non-normative
+> (s/SHOULD NOT/should not), 
+
+This is the most fundamental requirement to ensure that any PackedAsserts
+are generated, so i am really not clear why you are pushing back on it.
+
+> ... or the exceptions should be explained.
+
+Exception meaning the case where you could ignore the "SHOULD NOT" ?
+
+I logically started with a MUST NOT because it logically didn't make sense
+to me to implement reception of messages that nobody will send, but then
+i thought that i can't foresee all possible deployment cases, and maybe
+there is a good exception, and we don't want to rule it out. But we shouldn't
+have to know it upfront to write a cauteous SHOULD NOT.
+
+Now that i feel challenged by you to make up something:
+Maybe broadband access L2 rings with many routers, some low-cost  type of which are known
+to always be downstream to receiver only subnets (likely in IPTV enviroments),
+so they never need to send asserts, but they want to implement packing so their
+presence does not cause assert packing to be disabled on the LAN.
+
+But i really don't think i want to document something as speculative as that.
+
+> 279	   Routers SHOULD specify in documentation and/or management interfaces
+> 280	   (such as a YANG model), which PackedAssert message types they can
+> 281	   send and under which conditions they do - such as for data-triggered
+> 282	   asserts or Assert Timer (AT) expiry based asserts.
+> 
+> [major] "Routers SHOULD specify"
+> 
+> Routers can't specify anything!  Maybe: "Implementations are expected
+> to specify..."
+
+Routers SHOULD run ChatGPT to be able to explain to operators ...  Sorry ;-)
+
+fixed according to your suggestion.
+
+> [] In general, this paragraph says that several things are out of
+> scope and that they are implementation-specific.  Say that!
+> 
+> Suggestion>
+>    The details of when PackedAssert messages are used are
+>    implementation-specific and out of scope of this document.
+>    Implementations are expected to describe the types of
+>    PackedAssert messages they can use and under which conditions,
+>    including considerations for data-triggered and AT expiration.
+
+Ok, reshuffed the two paragraphs to now say:
+
+It is out of scope of this specification for which conditions, such as data-triggered asserts or 
+Assert Timer (AT) expiry based asserts, an implementation should generate PackedAsserts instead of Asserts.
+Instead,
+
+- Implementations are expected to specify in documentation and/or management interfaces (such as a YANG model),
+which PackedAssert message types they can send and under which conditions they will.  
+- Implementation should not send only Asserts, but no PackedAsserts under all conditions, 
+when all routers on the LAN do support Assert Packing.
+
+And i am still maintaining that the second bullet point could perfectly be
+normative, but i am fine either way, as long as it not being normative does not
+call for its complete removal.
+
+> 284	   To send a PackedAssert message, when a PIM router has an assert
+> 285	   record ready to sent according to the pseudocode "send Assert(...)"
+> 286	   in [RFC7761], it will not immediately proceed in generating a PIM
+> 287	   Assert message from it.  Instead, it will remember it for assert
+> 288	   packing and proceed with PIM assert processing for other (S,G) and
+> 289	   (*,G) flows that will result in further (S,G) or (*,G) assert records
+> 290	   until one or more of the following conditions is met and only then
+> 291	   send the PackedAssert message(s).
+> 
+> [major] There is no "send Assert(...)" pseudocode in rfc7761.  Instead
+> "send Assert()" is used as an action.
+
+I think you interpreted "pseudocode _that_defines_ "send Assert(..)", but i just meant
+pseudocode that _calls_ send Assert(...).
+
+However, after scanning rfc7761 again, i have unfortunately also to conclude that
+there is only pseudocode calling send assert() for a subset of cases
+(data triggreed), but there is also only state machinery Send Assert()
+for another subset (not for 4.8.2 SSM case, there is only pseudocode).
+
+So... the suggested fixup is terribly long to be on the safe side.
+
+> Suggestion>
+> 
+>    To send a PackedAssert message, following the pseudocode in Section
+>    4.6 of [RFC7761], a PIM router MAY delay the "send Assert(...)"
+>    action and continue PIM assert processing for other flows that may
+>    result in additional (S,G) or (*,G) assert records.  The following
+>    text discusses several considerations to be taken into account.
+
+When a PIM router has an assert record ready to send according to
+{{RFC7761}}, it calls send Assert(S,G) / send Assert(*,G) (Section 4.2),
+Send Assert(S,G) / SendAssertCancel(S,G) (Section 4.6.1), 
+Send Assert(*,G) / Send AssertCancel(*,G) (Section 4.6.2) and 
+send Assert(S,G) (Section 4.8.2). Each of these calls will schedule
+an Assert message. When sending of PackedAsserts is possible on the
+network, any of these calls is permitted to not send an Assert message, but only
+remember the assert record, and let PIM continue with assert processing
+for other flows that may result in additional assert records - to finally
+create PackedAssert messages from the remembered assert records.
+
+The following text discusses several conditions to be taken into account
+for this further processing and how to create and schedule PackedAssert messages.
+
+> 293	   1.  RECOMMENDED: Further processing would cause additional delay for
+> 294	       sending the PackedAssert message.
+> 
+> 296	   2.  OPTIONAL: Further processing would cause "relevant"(*) delay for
+> 297	       sending the PackedAssert message.
+> 
+> 299	   3.  OPTIONAL: The router has packed a "sufficient"(*) number of
+> 300	       assert records for a PackedAssert message.
+> 
+> 302	   4.  There is no further space left in a possible PackedAssert message
+> 303	       or the implementation does not want to pack further assert
+> 304	       records.
+> 
+> 306	   (*) "relevant" and "sufficient" are defined in this section below.
+> 
+> [] I don't specially like the bullets above because
+> RECOMMENDED/OPTIONAL have specific Normative meaning and they point to
+> some implementation and/or scenario-specific meaning.  Instead, I
+> think that the explanation below is much better in providing guidance
+> -- it even includes some Normative language that could be in conflict
+> (or at least hard to interpret) with the above.  In summary, I suggest
+> that you don't include the bullets and just jump in the the text
+> below.
+
+deleted.
+> 
+> 308	   Avoiding additional relevant delay is most critical for asserts that
+> 309	   are triggered by reception of data or reception of asserts against
+> 310	   which this router is the assert winner, because it needs to send out
+> 311	   an assert to the (potential) assert looser(s) as soon as possible to
+> 312	   minimize the time in which duplicate IP multicast packets can occur.
+> 
+> [] Suggestion>
+>    Avoiding delay is most critical for asserts that are triggered by
+>    reception of data or reception of asserts against which the router
+>    is in the "I am Assert Winner" state.  In these cases the router
+>    SHOULD send out an assert as soon as possible to minimize the time
+>    in which duplicate IP multicast packets can occur.
+
+Fixed to be:
+
+Avoiding possible additional and relevant delay because of further processing
+is most critical for assert records that are triggered by
+reception of data or reception of asserts against which the router
+is in the "I am Assert Winner" state.  In these cases the router
+SHOULD send out an Assert or PackedAssert message containing this assert record
+as soon as possible to minimize the time in which duplicate IP multicast packets can occur.
+
+> 314	   To avoid additional delay in this case, the router SHOULD employ
+> 315	   appropriate assert packing and scheduling mechanisms, such as for
+> 316	   example the following.
+> 
+> [major] "SHOULD employ appropriate assert packing and scheduling
+> mechanisms, such as for example"
+> 
+> SHOULD is a strong Normative keyword.  In this case the mechanisms are
+> not specified (making it really hard to verify compliance) and what
+> follows are examples.   s/SHOULD/should
+
+ack.
+
+> ...
+> 336	   An example mechanism to allows packing of AT expiry triggered assert
+> 337	   records on assert winners is to round the AT to an appropriate
+> 338	   granularity such as 100msec.  This will cause AT for multiple (S,G)
+> 339	   and/or (*,G) states to expire at the same time, thus allowing them to
+> 340	   be easily packed without changes to the assert state machinery.
+> 
+> [nit] s/to allows/to allow
+
+ack.
+
+> ...
+> 363	   When Asserts are sent, a single packet loss will result only in
+> 364	   continued or new duplicates from a single IP multicast flow.  Loss of
+> 365	   (non AssertCancel) PackedAssert impacts duplicates for all flows
+> 366	   packed into the PackedAssert and may result in the need for re-
+> 367	   sending more than one Assert/PacketAssert, because of the possible
+> 368	   inability to pack them.  Routers SHOULD therefore support mechanisms
+> 369	   allowing for PackedAsserts and Asserts to be sent with an appropriate
+> 370	   DSCP, such as Expedited Forwarding (EF), to minimize their loss,
+> 371	   especially when duplicate IP multicast packets could cause congestion
+> 372	   and loss.
+> 
+> [] "result in the need for re-sending more than one
+> Assert/PacketAssert, because of the possible inability to pack them."
+> The last phrase (after the comma) seems to just be trailing and not needed.
+
+Kept. I think its correct. If at all there could be more explanation, but i'll add
+this only if asked for.
+
+The packed assert was most likely packed assert timer expiry based assert records,
+because thats what you'd ultimately only see in steady state networks,
+but when such a packed assert is lost, you likely have to send a lot of Asserts
+or much less well packed PackedAsserts because they're now initially again from data
+trigger, depending at which time each of the flows forwards packets via send (duplicate
+creasting) PIM router. This amount of duplicates  can be worse then when the maimum number
+of (S,G) flows was initially built via PIM joins, because at that point, only the smaller
+number of freshly joined PIM (S,G) would be a problem, whereas when you're at 
+maximum steady state you're creating dups again for the maximum number of assrt
+records you managed to pack.
+
+> [] s/Routers SHOULD therefore support/Therefore, routers SHOULD support
+
+ack.
+
+> 374	   Routers MAY support a configurable option for sending PackedAssert
+> 375	   messages twice in short order (such as 50msec apart), to overcome
+> 376	   possible loss, but only a) if the total size of the two PackedAsserts
+> 377	   is less than the total size of equivalent Assert messages, and b) if
+> 378	   the [RFC7761] conditions that caused the assert records in the
+> 379	   PackedAssert message make the router believe that reception of either
+> 380	   copies of the PackedAssert message will not trigger sending of
+> 381	   Assert/PackedAssert.
+> 
+> [major] "Routers MAY support a configurable option...but only a)...and b)"
+> 
+> The text sounds as if the support for the configuration depends on a
+> and b.  Perhaps split the sentence: (optional configuration) +
+> (conditions under which the action may take place).
+> 
+> 
+> [] Also, condition b seems unimplementable because it depends on it
+> making "the router believe" (guessing!)...  Please rephrase with
+> something more specific.
+
+Replaced with the following:
+
+Routers MAY support a configurable option for sending PackedAssert messages twice in short order
+(such as 50msec apart), to overcome possible loss, but only when the following two conditions
+are met.
+
+1. The total size of the two PackedAsserts is less than the total size of equivalent Assert messages, 
+ 
+2. The condition of the assert records flows in the PackedAssert is such that the router
+   can expect that their reception by PIM routers will not trigger Assert/PackedAsserts replies.
+   This condition is true for example when sending an assert record while becoming or being Assert Winner (Action A1/A3).
+> 
+> 
+> ...
+> 398	   Like "relevant", "sufficient" is highly implementation dependent and
+> 399	   hence only optional.
+> 
+> [] This last sentence is not needed.
+
+Deleted. But introduced the MAY that was deleted by your ask to remove the initial list set of requirements
+(293 - 306) into the sentence in before this deleted sentence:
+
+Routers MAY support a "sufficient" amount of packing to minimize the negative impacts of loss of PackedAssert packets
+without loss of (minimum packet duplication) performance.
+
+> ...
+> 408	4.  Packet Formats
+> 
+> 410	   This section describes the format of new PIM messages introduced by
+> 411	   this document.
+> 
+> [nit] The first one is not a message.  s/messages/extensions
+
+ack.
+
+> 413	4.1.  PIM Assert Packing Hello Option
+> 
+> [minor] Please add a note to indicate where the format of the Hello
+> Options is defined (Section 4.9.2/rfc7761).
+> 
+
+ack.
+
+> ...
+> 429	4.2.  Assert Message Format
+> 430	    0                   1                   2                   3
+> 431	    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+> 432	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 433	   |PIM Ver| Type  | Reserved  |A|P|           Checksum            |
+> 434	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 435	   |              Group Address (Encoded-Group format)             |
+> 436	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 437	   |            Source Address (Encoded-Unicast format)            |
+> 438	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 439	   |R|                      Metric Preference                      |
+> 440	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 441	   |                             Metric                            |
+> 442	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 
+> 444	                              Figure 2: Assert
+> 
+> [major] Instead of copying the packet from rfc7761, you want to show
+> it with the header from Figure 1/rfc8736:
+> 
+>     0                   1                   2                   3
+>     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+>    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+>    |PIM Ver| Type  |   Flag Bits   |           Checksum            |
+>    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> 
+> The same applies to the other headers.
+
+I have now rewritten ASCII and explaining text to a hybrid of the format of RFC8736 Section 4 (Figure 2)
+and the inclusion of the new names for the allocated flags. This is also what
+draft-ietf-pim-null-register-packing-13 uses. 
+
+E.g.:
+
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |PIM Ver| Type  |7 6 5 4 3 2|A|P|           Checksum            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+> 446	   When assert packing is used on a subnet, routers MUST send Assert
+> 447	   messages according to above format.  This is exactly the same format
+> 448	   as the one defined in [RFC7761] but the A and P flags are not
+> 449	   reserved, but distinguish this Assert Message Format from those newly
+> 450	   defined in this document.
+> 
+> [major] "MUST send Assert messages according to above format"
+> 
+> This specification should require the use of the Assert message from
+> rfc7761 *with* the bits set to 0...and not what someone may interpret
+> as a new or potentially different message.
+> 
+> Suggestion>
+>    Figure 2 shows a PIM Assert message as specified in Section 4.9.6 of
+>    [RFC7761] with the common header showing the Flag Bits [RFC8736] and
+>    the location of the P and A flags.  As specified in Section 3.2, both
+>    flags in a (non-packed) PIM Assert message are required to be set to 0.
+> 
+>    [You can eliminate the rest of this section.]
+
+Ack.
+
+> 
+> ...
+> 720	5.  Updates from RFC3973 and RFC7761
+> 
+> [] We don't need this section at all.  The Introduction already
+> "scopes" the work to PIM-SM.  Please take it out.
+> 
+
+Happy to, and done - although its formally not quite correct ;-)
+
+> ...
+> 733	   [RFC-Editor: pls. remove this sentence: RFC3973 should be historic by
+> 734	   now, and it is only mentioned at all because of the fact that the
+> 735	   "PIM Message Type Registry" mentions it, and this document mentions
+> 736	   that registry.  Depending on IETF/IESG review, the authors would
+> 737	   prefer if we could remove all mentioning of RFC3973 in this document,
+> 738	   because it may just confuse readers.]
+> 
+> [] Please ask the WG to change the status of rfc3973.  In this case we
+> might need a document to clean up the registries.
+> 
+> https://www.ietf.org/about/groups/iesg/statements/designating-rfcs-historic-2014-07-20/
+
+Ok, thanks. 
+
+> 740	6.  IANA Considerations
+> 
+> [minor] Put the request before the table.
+
+fixed.
+> 
+> 
+> 742	   +======+========================+===============+
+> 743	   | Type |     Description        | Reference     |
+> 744	   +======+========================+===============+
+> 745	   | TBD  |Packed Assert Capability| This Document |
+> 746	   +======+========================+===============+
+> 
+> 748	                                  Figure 9
+> 
+> [major] The registry includes 4 columns: Value, Length, Name, and Reference.
+> 
+> https://www.iana.org/assignments/pim-parameters/pim-parameters.xhtml#pim-parameters-1
+
+oops. Fixed.
+
+> 
+> 
+> 750	   IANA is requested to allocate a new code points from the "PIM-Hello
+> 751	   Options" registry for TBD.
+> 
+> [] Suggestion>
+>    IANA is requested to assign a new code point from the "PIM-Hello
+>    Options" registry for the Packed Assert Capability as follows:
+
+fixed.
+
+> 
+> ...
+> 763	   IANA is asked to add the definition of the Aggregated and Packed
+> 764	   Flags Bits for the PIM Assert Message Type to the "PIM Message Types"
+> 765	   registry according to [RFC8736] IANA considerations, and as shown in
+> 766	   Figure 9.
+> 
+> [] Suggestion>
+>    IANA is requested to assign two Flag Bits in the Assert message
+>    from the "PIM Message Types" registry as follows:
+
+fixed.
+
+> [EoR -07]
