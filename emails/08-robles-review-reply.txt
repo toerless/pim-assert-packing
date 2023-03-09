@@ -1,0 +1,64 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Ines Robles <mariainesrobles@googlemail.com>
+Cc: gen-art@ietf.org, draft-ietf-pim-assert-packing.all@ietf.org,
+	last-call@ietf.org, pim@ietf.org
+Bcc: 
+Subject: Re: [pim] Genart last call review of draft-ietf-pim-assert-packing-08
+Reply-To: 
+In-Reply-To: <167780197867.47601.4229430428173316276@ietfa.amsl.com>
+
+Thanks, Index
+
+All fix incorporated into -09.
+
+Cheers
+    Toerless
+
+On Thu, Mar 02, 2023 at 04:06:18PM -0800, Ines Robles via Datatracker wrote:
+> Reviewer: Ines Robles
+> Review result: Ready with Nits
+> 
+> I am the assigned Gen-ART reviewer for this draft. The General Area
+> Review Team (Gen-ART) reviews all IETF documents being processed
+> by the IESG for the IETF Chair.  Please treat these comments just
+> like any other last call comments.
+> 
+> For more information, please see the FAQ at
+> 
+> <https://trac.ietf.org/trac/gen/wiki/GenArtfaq>.
+> 
+> Document: draft-ietf-pim-assert-packing-08
+> Reviewer: Ines Robles
+> Review Date: 2023-03-02
+> IETF LC End Date: 2023-03-02
+> IESG Telechat date: Not scheduled for a telechat
+> 
+> Summary:
+> 
+> This document defines a mechanism to send and receive information for multiple
+> IP multicast flows in a single PackedAssert message.
+> 
+> I have not found major issues in this document.
+> 
+> Major issues: None
+> 
+> Minor issues: None
+> 
+> Nits/editorial comments:
+> 
+> Missing caption for Figure 9 and Figure 10
+> 
+> Thanks for this document,
+> 
+> Ines.
+> 
+> 
+> 
+> _______________________________________________
+> pim mailing list
+> pim@ietf.org
+> https://www.ietf.org/mailman/listinfo/pim
+
+-- 
+---
+tte@cs.fau.de

@@ -1,0 +1,95 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Stig Venaas <stig@venaas.com>
+Cc: drafts-expert-review-comment@iana.org,
+	Alvaro Retana <aretana.ietf@gmail.com>, pim@ietf.org,
+	stig@cisco.com
+Bcc: 
+Subject: Re: [pim] [IANA #1266746] expert review for
+ draft-ietf-pim-assert-packing (pim-parameters)
+Reply-To: 
+In-Reply-To: <CAHANBt+FZktZ9k0jQA8+4GC_WdQLswWjVZPUiZ3qcquSNYw=og@mail.gmail.com>
+
+Thanks Stig.
+
+in -09:
+
+a) I have removed the Count field and added a "Zero" field to resolve the issue we discussed earlier.
+
+b) IANA: I have changed rev to rfc8736bis and changed "Reserved" to "Unused" in the IANA ask picture.
+
+   Also added RFC-Editor note that the two asked for bits are "placeholder".
+
+Cheers
+    Toerless
+
+On Thu, Mar 02, 2023 at 02:59:39PM -0800, Stig Venaas wrote:
+> Hi David
+> 
+> The IANA considerations look good.
+> 
+> There is an IETF process issue though. Copying Alvaro who is the AD
+> for this document, but he is aware.
+> 
+> If you see in this draft, and the registry, the bits are marked as
+> reserved. But they should have been unassigned.
+> This is being fixed with
+> https://www.ietf.org/archive/id/draft-ietf-pim-rfc8736bis-00.html that
+> we are trying to get published soon.
+> 
+> I guess the assert-packing draft publication might wait for that draft
+> to be published, so at the time the IANA assignment will be done, the
+> registry should be updated to show that these are unassigned.
+> 
+> Regards,
+> Stig
+> 
+> 
+> On Fri, Feb 17, 2023 at 1:00 PM David Dong via RT
+> <drafts-expert-review-comment@iana.org> wrote:
+> >
+> > Dear Stig Venaas and Jeffrey (Zhaohui) Zhang (cc: pim WG),
+> >
+> > As the designated experts for the PIM-Hello Options registry, can you review the proposed registration in draft-ietf-pim-assert-packing for us? Please see:
+> >
+> > https://datatracker.ietf.org/doc/draft-ietf-pim-assert-packing/
+> >
+> > The due date is March 3rd, 2023.
+> >
+> > If this is OK, when the IESG approves the document for publication, we'll make the registration at
+> >
+> > https://www.iana.org/assignments/pim-parameters/
+> >
+> > We'll wait for both reviewers to respond unless you tell us otherwise.
+> >
+> > With thanks,
+> >
+> > David Dong
+> > IANA Services Specialist
+> >
+> > On Fri Feb 17 20:56:06 2023, david.dong wrote:
+> > > First, in the PIM-Hello Options registry on the Protocol Independent
+> > > Multicast (PIM) Parameters registry page located at:
+> > >
+> > > https://www.iana.org/assignments/pim-parameters/
+> > >
+> > > a single, new registration will be made as follows:
+> > >
+> > > Value: [ TBD-at-Registration ]
+> > > Length: 0
+> > > Name: Packed Assert Capability
+> > > Reference: [ RFC-to-be ]
+> > >
+> > > As this document requests registrations in an Expert Review or
+> > > Specification Required (see RFC 8126) registry, we will initiate the
+> > > required Expert Review via a separate request. This review must be
+> > > completed before the document's IANA state can be changed to "IANA OK.
+> >
+> 
+> _______________________________________________
+> pim mailing list
+> pim@ietf.org
+> https://www.ietf.org/mailman/listinfo/pim
+
+-- 
+---
+tte@cs.fau.de

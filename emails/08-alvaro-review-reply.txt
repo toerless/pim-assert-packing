@@ -1,0 +1,223 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Alvaro Retana <aretana.ietf@gmail.com>
+Cc: pim-chairs <pim-chairs@ietf.org>, pim@ietf.org,
+	Stig Venaas <stig@venaas.com>,
+	draft-ietf-pim-assert-packing@ietf.org
+Bcc: 
+Subject: Re: Last Call Expired: <draft-ietf-pim-assert-packing-08.txt>
+Reply-To:
+In-Reply-To: <CAMMESszr5-_r6D1XgSkiQDvSV_MbXgQ=nh+W+3_LDJjS5TQ7mw@mail.gmail.com>
+
+Alvaro,
+
+Just uploaded -09 of the assert packing draft.
+
+Hope this is ready for you to go to IESG!
+
+-09 should fix all your concerns including:
+
+ - I did remove "Count" from message headers and added a "Zero" field
+   to resolve the discuss with Stigs.
+
+ - Integrated feedback from Robert Sparks, Tommy Pauly, Ines Robles
+   and Shuping Peng. See individual emails or summary in changelog.
+
+ - browsed through the null-register IESG mails, albeit a bit superficial,
+   but did not find anything but the update to rfc8736bis, which i already
+   did based on Stigs feedback.
+
+ - your details as of below.
+
+The following points is not following your ask:
+
+- the "SHOULD NOT" (send no packed asserts at all),
+  where i think you are not making a case for your argument, and
+  i think it is fundamental to mandate the SHOULD NOT because its
+  the strongest possible way to guarantee some operational gain
+  without also having to guess at which implementation choice
+  gives the least amount of work for the best performance gain.
+
+Cheers
+    Toerless
+
+On Thu, Feb 16, 2023 at 02:16:42PM -0600, Alvaro Retana wrote:
+> On February 16, 2023 at 1:49:18 AM, Toerless Eckert wrote:
+> 
+> Hi!
+> 
+> 
+> I went through the diffs/your comments -- look for some comments below.
+> 
+> Thanks!
+> 
+> 
+> Alvaro.
+> 
+> 
+> 
+> > The new version -08 just posted should resolve all issues raised by you
+> > according to your suggestions / asks except for the following two:
+> >
+> > 1. I have written the ASCII header format from RFC8736 figure 2
+> > / seection 4 (which is also specifying how to set/receive them),
+> > in the way draft-ietf-pim-null-register-packing-13 style also uses it:
+> >
+> > +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> > |PIM Ver| Type |7 6 5 4 3 2|A|P| Checksum |
+> > +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+> >
+> > (aka: insted of writing 0 1 instead of A and P).
+> 
+> That's fine.
+> 
+> 
+> 
+> > 2. I've kept the SHOULD NOT (send only non-PackedAssert messages in all
+> > situations). see inline explanations why.
+> 
+> See below.
+> 
+> 
+> 
+> ...
+> > > To start the IETF Last Call, I need you to submit a new draft without
+> > > the Updates tag and without references to RFC3973. To accelerate the
+> > > process, you can consider all other points as last call comments.
+> 
+> I spoke too fast, we do need an Informative reference to rfc3973
+> because of Figure 10.
+
+Re-animated reference. But not added an "updates" to the header!
+(which i still think is technically wrong, but given how we effectively managed
+ to kill "ip pim sparse-dense-mode" in Cisco in hmm... 2010?, there
+ is hopefully no case left where we need to worry about actual interop
+ of PIM-SM with PIM-DM in a LAN). And i am happy to get PIM-DM to historic anyhow...
+
+> ...
+> > > 4 Updates: RFC7761, RFC3973 (if approved) M. McBride
+> > >
+> > > [major] No. This draft doesn't formally Update either.
+> >
+> > Let me try to answer my own unanswered question, why its not an update to
+> > RFC7761: Because the only upgrade questionable change this draft does are the
+> > two flag bits, but RFC8736 already updated RFC7761 and converted that
+> > resserved space into a registry, so now we only need to hook into the
+> > registry, no updates required.
+> >
+> > Bingo ?
+> 
+> Bingo!
+> 
+> 
+> 
+> ...
+> > > [major] "A)ggregated flag MUST be set to 0"
+> > >
+> > > What should a receiver do if P=0 but A=1? I see two options: assume
+> > > that A was set by mistake and parse only one record, or ignore the
+> > > message.
+> >
+> > Fixed to:
+> > In this case, the (A) flag MUST be set to 0, and MUST be ignored on receipt.
+> 
+> Even better!
+> 
+> 
+> 
+> > i'll try to change all occurances of e.g. A)ggregated to just (A) in the
+> > text, likewise for (P) given how you wanted that format to be introduced/used
+> > above.
+> 
+> There's one instance of "P)acked" left.
+> 
+> Also, in the new text: s/(P) flag is 2/(P) flag is 1
+
+Fixed from other reviewer already.
+> 
+> 
+> 
+> ...
+> > > [major] "Implementations SHOULD NOT send only Asserts (but no
+> > > PackedAsserts) in all cases when all routers on the LAN do support
+> > > Assert Packing."
+> > >
+> > > I guess that you mean that (at least) there should be a mix of Asserts
+> > > and PackedAsserts, right?
+> >
+> > Yes.
+> >
+> > > If so, how do you normatively enforce that?
+> >
+> > With the sentence i wrote !!
+> > If you have a better sentence please suggest.
+> 
+> The point is that if the conditions to send PackedAsserts are out of
+> scope, how can you normatively recommend/mandate, and later enforce,
+> that (at least) some PacketAsserts are sent?  By leaving the choice
+> out of scope, an implementation may decide to never send PackedAsserts
+> (but be willing to always receive) -- it would be compliant.
+
+Sure. It has only violated a SHOULD NOT, so it is compliant with the RFC.
+ Like any SHOULD violation, we can just hope there is a good reason.
+
+That is exactly what i think we want to say. This is meant to be
+a performance enhancement option. When an implementation needs
+performance enhancements, the implementers/testers will experiment
+with which particular place it is most easy to generate PackedAsserts to
+achieve the biggest benefit. This min/max choice can be different for different
+vendors. If a vendor does not include any sending of PackedAsserts,
+there will be no performance enhancement i think, but there may
+be corner cases such as passive-only PIM nodes on a LAN or the like
+that would be a possible good reason to violate the SHOULD NOT.
+
+
+> ...
+> > Exception meaning the case where you could ignore the "SHOULD NOT" ?
+> >
+> > I logically started with a MUST NOT because it logically didn't make sense
+> > to me to implement reception of messages that nobody will send, but then
+> > i thought that i can't foresee all possible deployment cases, and maybe
+> > there is a good exception, and we don't want to rule it out. But we shouldn't
+> > have to know it upfront to write a cauteous SHOULD NOT.
+> >
+> > Now that i feel challenged by you to make up something:
+> ...
+> > But i really don't think i want to document something as speculative as that.
+> 
+> I agree!
+> 
+> In summary: if it's out of scope then we can't Normatively recommend
+> anything, but you can s/SHOULD NOT/should not
+
+IMHO No: I think we really want to say SHOULD NOT.
+I don't think you made a solid case for this not being a perfect normative
+requirement.
+
+The SHOULD NOT is actionable. The text includes a lot of
+cases of different assert reasons from RFC7761, e.g. when and where
+they are created in the PIM state machinery. Each with a different
+coding challenge for pcking.
+
+And validation can easily be through observation of a vendor documented scenario
+(with multiple of same implementation routers on the same LAN) that
+the vendor claims will result in packedasserts.
+
+> ...
+> > Deleted. But introduced the MAY that was deleted by your ask to remove the
+> > initial list set of requirements (293 - 306) into the sentence in before this
+> > deleted sentence:
+> >
+> > Routers MAY support a "sufficient" amount of packing to minimize the negative
+> > impacts of loss of PackedAssert packets without loss of (minimum packet
+> > duplication) performance.
+> 
+> The rest of this paragraph talks about considerations around
+> "sufficient", and this last sentence says that all that is optional
+> (MAY).  Given that the conditions to use PacketAsserts are out of
+> scope, I think the "MAY" is out of place because it is not really
+> presenting a Normative option, but stating a fact.  s/MAY/may
+
+I disagee, but how about a trade: I give you a may, you let us keep a SHOULD NOT.
+
+Cheers
+    Toerless

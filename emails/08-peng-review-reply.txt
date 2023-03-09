@@ -1,0 +1,123 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Shuping Peng <pengshuping@huawei.com>
+Cc: rtg-dir@ietf.org, draft-ietf-pim-assert-packing.all@ietf.org,
+	last-call@ietf.org, pim@ietf.org
+Bcc: 
+Subject: Re: Rtgdir last call review of draft-ietf-pim-assert-packing-08
+Reply-To: 
+In-Reply-To: <167766980202.31063.9174580134882101235@ietfa.amsl.com>
+
+Dear Shuping
+
+Thanks a lot for the review.
+
+all your comments are resolved in just posted -09 of the draft.
+
+Comments below inline.
+
+Cheers
+    Toerless
+
+On Wed, Mar 01, 2023 at 03:23:22AM -0800, Shuping Peng via Datatracker wrote:
+> Reviewer: Shuping Peng
+> Review result: Has Nits
+> 
+> Hello,
+> 
+> I have been selected as the Routing Directorate reviewer for this draft. The
+> Routing Directorate seeks to review all routing or routing-related drafts as
+> they pass through IETF last call and IESG review, and sometimes on special
+> request. The purpose of the review is to provide assistance to the Routing ADs.
+> For more information about the Routing Directorate, please see
+> ​http://trac.tools.ietf.org/area/rtg/trac/wiki/RtgDir
+> 
+> Although these comments are primarily for the use of the Routing ADs, it would
+> be helpful if you could consider them along with any other IETF Last Call
+> comments that you receive, and strive to resolve them through discussion or by
+> updating the draft.
+> 
+> Document: draft-ietf-pim-assert-packing-08
+> Reviewer: Shuping Peng
+> Review Date: 27 Febrary 2023
+> IETF LC End Date: 2 March 2023
+> Intended Status: Standards
+> 
+> Summary:
+> This document is basically ready for publication but has nits that should be
+> considered prior to publication.
+> 
+> Comments:
+> 3.2
+> "..., otherwise it is 0." What does "it" indicate?
+
+changed to: otherwise the Source Address is set to 0 in the assert record.
+> 
+> 3.3
+> How to understand this "layer" mentioned in the following text?
+> "Instead, sending and receiving of PackedAssert messages as specified in the
+> following subsections is logically a layer in between sending/receiving of
+> Assert messages and serialization/deserialization of their respective packets."
+
+Yeah.. reconsidering what we do, it's not ideal to describe it as a a layer. Changed to:
+
+are logically new packetization options for assert records in addition to the (not packed) {{RFC7761}} Assert Message.
+
+> Major Issues:
+> No major issues found.
+> 
+> Minor Issues:
+> No minor issues found.
+> 
+> Nits:
+> 
+> Abstract
+> As PIM Sparse Mode (PIM-SM), the term "PIM-SSM" is better to be expanded as
+> well.
+
+Fun side node: when we finalized RFC8815 with RFC Editor we made PIM-SSM become
+a well-known term in https://www.rfc-editor.org/materials/abbrev.expansion.txt,
+so everybody in the IETF should know it's expansion (as opposed to PIM-SM)) ;-),
+and therefore it is not mandatory to expand the term on first use.
+(expanded anyhow ;-)
+
+> 1. Introduction
+> It would be better to expand "RP" on its first use.
+> 
+
+Fixed
+
+> 2. Problem statement
+> s/occur/occurs
+
+I rather changed to "PIM Asserts occur"
+                               ^
+> 3.1
+> "PIM Hello Assert Packing Option" or "PIM Assert Packing Hello Option"?
+
+"PIM Assert Packing Hello Option" - fixed.
+
+> 3.2
+> (S,G) are better to be expanded.
+> Maybe in the following text "...Source Address (S), Group Address (G)...".
+
+Did check a few other RFCs (including RFC7761) and this is never expanded.
+
+> s/P)acked/(P)
+
+fixed.
+
+> It would be better to start a paragraph from "If the (P) flag is 2, ..."
+
+fixed.
+
+> 3.3
+> s/encoding/encodings
+
+Sentence changed due to other reviewer.
+
+> 3.3.1
+> s/packe/pack
+> s/Threrefore/Therefore
+
+Fixed
+

@@ -1,0 +1,77 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Tommy Pauly <tpauly@apple.com>
+Cc: tsv-art@ietf.org, draft-ietf-pim-assert-packing.all@ietf.org,
+	last-call@ietf.org, pim@ietf.org
+Bcc: 
+Subject: Re: Tsvart last call review of draft-ietf-pim-assert-packing-08
+Reply-To: 
+In-Reply-To: <167744051037.38266.6321476669893686492@ietfa.amsl.com>
+
+Thanks again Tommy
+
+All textual fixes for your review are integrated into revision -09.
+
+I did not add more text to explain your transport related questions as
+i felt that it is basic PIM assert understanding that readers who want to
+use/implement PIM (with or without assert packing) should have
+Hence only the prior explanation email to you, which i summarized in
+changelog for benefit of possible later reviewers too.
+
+Cheers
+    Toerless
+
+On Sun, Feb 26, 2023 at 11:41:50AM -0800, Tommy Pauly via Datatracker wrote:
+> Reviewer: Tommy Pauly
+> Review result: Ready with Nits
+> 
+> This document has been reviewed as part of the transport area review team's
+> ongoing effort to review key IETF documents. These comments were written
+> primarily for the transport area directors, but are copied to the document's
+> authors and WG to allow them to address any issues raised and also to the IETF
+> discussion list for information.
+> 
+> When done at the time of IETF Last Call, the authors should consider this
+> review as part of the last-call comments they receive. Please always CC
+> tsv-art@ietf.org if you reply to or forward this review.
+> 
+> Thanks to the authors for this clear and useful document. Reducing the overhead
+> of redundant multicast packets is a good improvement!
+> 
+> The main transport-related comment I have is for section 3.3.1:
+> “ Routers MAY support a configurable option for sending PackedAssert messages
+> twice in short order (such as 50msec apart), to overcome possible loss, but
+> only when the following two conditions are met.”
+> 
+> How will an end point decide to retransmit like that or not? How is loss
+> detected?
+> 
+> I did find several nits:
+> 
+> “RP” is mentioned in the introduction before it is defined. It would be useful
+> to expand this here. It would also be good to expand “AT” on first use.
+> 
+> Section 3.2 seems to have a formatting issue, with “ If the P)acked flag is 0”.
+> Do you mean “ If the (P) flag is 0”? This section also says “If the (P) flag is
+> 2”; how can a 1-bit flag have a value of 2?
+> 
+> In section 3.3, “Only the compactness of their encoding” is a sentence
+> fragment, not a complete sentence.
+> 
+> In section 3.3.1, this normative requirement is confusingly worded: “
+> Implementation SHOULD NOT send only Asserts, but no PackedAsserts under all
+> conditions, when all routers on the LAN do support Assert Packing.” Can you
+> rephrase?
+> 
+> In the same section, please add a reference when discussing DSCP markings.
+> 
+> In section 4: In the packed form, are the version/flags fields repeated? Do we
+> need to mandate normatively that the packed flags are not nested? It’s implied
+> but not normatively said.
+> 
+> In section 4.4.1, the field description order doesn’t seem to match the
+> structure values in the diagram.
+> 
+
+-- 
+---
+tte@cs.fau.de

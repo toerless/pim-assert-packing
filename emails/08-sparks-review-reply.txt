@@ -1,0 +1,124 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Robert Sparks <rjsparks@nostrum.com>
+Cc: secdir@ietf.org, draft-ietf-pim-assert-packing.all@ietf.org,
+	last-call@ietf.org, pim@ietf.org
+Bcc: 
+Subject: Re: Secdir last call review of draft-ietf-pim-assert-packing-08
+Reply-To: 
+In-Reply-To: <167779012745.48190.5038126565749568374@ietfa.amsl.com>
+
+Thanks Robert, for the review
+
+09 addresses all the feddback i could reasonably fit into this draft.
+More about your points in the following explanations.
+
+Cheers
+    Toerless
+
+On Thu, Mar 02, 2023 at 12:48:47PM -0800, Robert Sparks via Datatracker wrote:
+> Reviewer: Robert Sparks
+> Review result: Has Nits
+> 
+> I have reviewed this document as part of the security directorate's ongoing
+> effort to review all IETF documents being processed by the IESG. These comments
+> were written primarily for the benefit of the security area directors. Document
+> editors and WG chairs should treat these comments just like any other review
+> comments.
+> 
+> This document is ready (but has nits) for publication as a Proposed Standard RFC
+> 
+> I found no specific security issues (unless the below tickles something for
+> you). If you touch it again, consider rementioning the greater impact of loss
+> of a PackedAssert.
+
+- Given we're already throwing all the (operationally expensive) options such
+  as DSCP/EF onto the problem of loss, i feel that i have exhausted what the
+  document could and should do wrt to discussing impact of loss.
+
+-  I specifically did not mention packet loss in the security section, because
+  i couldn't find an attack vector to create this situation, so i think it
+  is just (a very important) reliability issue, but not a security issue.
+  (not sure if you where even implying that).
+
+> This is more of a question than a nit, but it didn't feel like something to
+> flag as an issue. There's discussion of not using packing unless all PIM
+> routers in the same subnet have announced the Assert Packing Hello Option. What
+> happens in a running environment that is busy using packing when a new PIM
+> router is added? If traffic from that PIM router is seen that is not yet the
+> needed Hello Option, should all senders stop packing until the needed Hello
+> Option arrives, and maybe resend recently packed asserts as unpacked?
+
+In general, a new PIM router would not send data packets until it has received
+joins from a neighbor from it has received PIM Hello in before. And that neighbor
+will not send PIM joins before it has seen the PIM Hello from the neighbor.
+So in general this is a non-issue.
+
+However there could of course theoretically be the pathetic situations where D is new and did send
+hellos, C saw D's Hello, sends joins to D, D starts forward data (for C), but A is also
+still forwarding the same data because of a fourth router B, but A didn't receive D's Hello,
+and now Ds may start to assert for A's packets and when A receives those asserts, it
+SHOULD discard them, but there SHOULD be a config option to override the
+first SHOULD (rfc7761, 4.6) - OH WELL ;-)
+
+This is not a new issue for assert packing but already for rfc7761, and i don't think
+it gets worse with rfc7761.
+  
+If we wanted to solve this issue, we would need to introduce some PIM Hello option
+whereby a neighbor is only eligible as our PIM upstream if it has all the same PIM neighbors
+as we have. There is a 2005 PIM Hello option assigned to Alex Zinin that i think
+tried to do this, but i don't think there was ever an IETF spec for it. I have
+not seen good evidence that the problem is strong enough for IETF work on it, but
+it would be a separate draft. I'll ask the WG.
+
+> Nits:
+> 
+> The last two paragraphs of the Problem Statement are not part of the problem
+> statement - they are more of a discussion of alternate, likely unsatisfactory,
+> solutions. Maybe they can be removed, or put somewhere else?
+
+Moved into beginning of appendix.
+
+> Third paragraph of section 3.2 says "If the (P) flag is 2". I think you meant 1?
+
+Fixed.
+
+> At 3.3, it would be more complete to acknowledge that the timing of the
+> delivery of the asserts is also affected, not just the compactness of the
+> encoding.
+
+Added as last sentence.
+
+> The second bullet in section 3.3.1 took several reads to iron out the logic -
+> this may be an English vs other language convention thing. Consider this
+> alternative: " When any PIM routers on the LAN do not support Assert Packing,
+> implementations MUST send only Asserts and MUST NOT send PackedAsserts under
+> any condition." I think that says the same thing. Additionally, I would go
+> further and say "have not signaled support for Assert Packing" rather than "do
+> not support Assert Packing".
+
+Applied sugested fix.
+
+> The paragraph after that bullet contains "to finally packe PackedAssert". Typo
+> at packe.
+
+fixed.
+> 
+> I found the quotes around "sufficient" very distracting at the last paragraph
+> of 3.3.1. Please consider reconstructing the paragraph to avoid the urge to use
+> the quotes. Maybe unquote the first "sufficient", and define a word called SIZE
+> described by the first two sentences. Then use SIZE in the rest of the
+> instances. This may just be a style comment, but the quoted form brings
+> communication baggage you didn't intend.
+
+So... for now i've simply removed all the parenthesis. Earlier there was text
+elswhere (outside this long paragraph) also referring to "sufficient". This was
+removed by review from Alvaro. So hope no special quotation is needed. But then
+i also don't see the need to emphasize on SIZE. Especially given how there are
+multiple sizes discussed here in the paragraph.
+
+Cheers
+    Toerless
+> 
+-- 
+---
+tte@cs.fau.de
