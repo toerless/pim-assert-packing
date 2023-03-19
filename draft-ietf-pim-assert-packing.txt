@@ -13,7 +13,7 @@ Expires: 19 September 2023                                    M. McBride
 
 
                        PIM Assert Message Packing
-                    draft-ietf-pim-assert-packing-10
+                    draft-ietf-pim-assert-packing-11
 
 Abstract
 
@@ -97,10 +97,10 @@ Table of Contents
    8.  Working Group considerations  . . . . . . . . . . . . . . . .  19
      8.1.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  19
      8.2.  Changelog . . . . . . . . . . . . . . . . . . . . . . . .  19
-       8.2.1.  draft-ietf-pim-assert-packing-10  . . . . . . . . . .  19
-       8.2.2.  draft-ietf-pim-assert-packing-10  . . . . . . . . . .  19
+       8.2.1.  draft-ietf-pim-assert-packing-11  . . . . . . . . . .  19
+       8.2.2.  draft-ietf-pim-assert-packing-10  . . . . . . . . . .  20
        8.2.3.  draft-ietf-pim-assert-packing-09  . . . . . . . . . .  20
-       8.2.4.  draft-ietf-pim-assert-packing-08  . . . . . . . . . .  20
+       8.2.4.  draft-ietf-pim-assert-packing-08  . . . . . . . . . .  21
        8.2.5.  draft-ietf-pim-assert-packing-07  . . . . . . . . . .  21
        8.2.6.  draft-ietf-pim-assert-packing-06  . . . . . . . . . .  21
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  21
@@ -115,13 +115,13 @@ Internet-Draft               assert-packing                   March 2023
 
 
    Appendix A.  Use case examples  . . . . . . . . . . . . . . . . .  22
-     A.1.  Enterprise network  . . . . . . . . . . . . . . . . . . .  22
+     A.1.  Enterprise network  . . . . . . . . . . . . . . . . . . .  23
      A.2.  Video surveillance  . . . . . . . . . . . . . . . . . . .  23
      A.3.  Financial Services  . . . . . . . . . . . . . . . . . . .  23
      A.4.  IPTV broadcast Video  . . . . . . . . . . . . . . . . . .  23
      A.5.  MVPN MDT  . . . . . . . . . . . . . . . . . . . . . . . .  23
-     A.6.  Special L2 services . . . . . . . . . . . . . . . . . . .  23
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  23
+     A.6.  Special L2 services . . . . . . . . . . . . . . . . . . .  24
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  24
 
 1.  Introduction
 
@@ -1036,7 +1036,7 @@ Internet-Draft               assert-packing                   March 2023
    This document is hosted starting with -06 on
    https://github.com/toerless/pim-assert-packing.
 
-8.2.1.  draft-ietf-pim-assert-packing-10
+8.2.1.  draft-ietf-pim-assert-packing-11
 
    Thorough AD review by John Scudder.
 
@@ -1048,13 +1048,13 @@ Internet-Draft               assert-packing                   March 2023
    day 0 implementations because they may want to save the work of
    having a non-packed-assert code path.
 
-8.2.2.  draft-ietf-pim-assert-packing-10
+   Some rewrite to increase readibility, subdivided 3.3.1 into multiple
+   subsections to better structure it.
 
-   Fixed up Reserved field of PackedAsserts to get back to 32 bit
-   alignment of the following fields (was down to 16 bits).  Sorry, had
-   a misinterpretation reading rfc7761, though there ws something that
-   had only made it 16 bit aligned.  Anyhow.  Only this one change, 8 ->
-   24 bit for this field.
+   Some nits.
+
+
+
 
 
 
@@ -1065,6 +1065,14 @@ Liu, et al.             Expires 19 September 2023              [Page 19]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+8.2.2.  draft-ietf-pim-assert-packing-10
+
+   Fixed up Reserved field of PackedAsserts to get back to 32 bit
+   alignment of the following fields (was down to 16 bits).  Sorry, had
+   a misinterpretation reading rfc7761, though there ws something that
+   had only made it 16 bit aligned.  Anyhow.  Only this one change, 8 ->
+   24 bit for this field.
 
 8.2.3.  draft-ietf-pim-assert-packing-09
 
@@ -1104,6 +1112,16 @@ Internet-Draft               assert-packing                   March 2023
    trigger for retransmission, just restransmission of same message
    element after discover of ongoing duplicates and/or expiry of timers.
 
+
+
+
+
+
+Liu, et al.             Expires 19 September 2023              [Page 20]
+
+Internet-Draft               assert-packing                   March 2023
+
+
 8.2.4.  draft-ietf-pim-assert-packing-08
 
    Included changes from review of Alvaro Retana
@@ -1114,13 +1132,6 @@ Internet-Draft               assert-packing                   March 2023
 
    https://raw.githubusercontent.com/toerless/pim-assert-packing/main/
    emails/07-alvaro-review-reply.txt
-
-
-
-Liu, et al.             Expires 19 September 2023              [Page 20]
-
-Internet-Draft               assert-packing                   March 2023
-
 
 8.2.5.  draft-ietf-pim-assert-packing-07
 
@@ -1160,6 +1171,13 @@ Internet-Draft               assert-packing                   March 2023
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
+
+
+Liu, et al.             Expires 19 September 2023              [Page 21]
+
+Internet-Draft               assert-packing                   March 2023
+
+
    [RFC7761]  Fenner, B., Handley, M., Holbrook, H., Kouvelas, I.,
               Parekh, R., Zhang, Z., and L. Zheng, "Protocol Independent
               Multicast - Sparse Mode (PIM-SM): Protocol Specification
@@ -1169,14 +1187,6 @@ Internet-Draft               assert-packing                   March 2023
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
-
-
-
-
-Liu, et al.             Expires 19 September 2023              [Page 21]
-
-Internet-Draft               assert-packing                   March 2023
-
 
 9.2.  Informative References
 
@@ -1217,6 +1227,13 @@ Appendix A.  Use case examples
    use-cases in which subnets with asserts have been observerd or are
    expected to require scaling as provided by this specification.
 
+
+
+Liu, et al.             Expires 19 September 2023              [Page 22]
+
+Internet-Draft               assert-packing                   March 2023
+
+
 A.1.  Enterprise network
 
    When an Enterprise network is connected through a layer-2 network,
@@ -1224,15 +1241,6 @@ A.1.  Enterprise network
    of the enterprise are equivalent to the PIM connection through the
    shared LAN network.  Depending upon the locations and amount of
    groups there could be many asserts on the first-hop routers.
-
-
-
-
-
-Liu, et al.             Expires 19 September 2023              [Page 22]
-
-Internet-Draft               assert-packing                   March 2023
-
 
 A.2.  Video surveillance
 
@@ -1269,16 +1277,8 @@ A.5.  MVPN MDT
    routing and forwarding) or interface that is in a VRF changing may
    cause many assert packets to be sent in a same time.
 
-A.6.  Special L2 services
 
-   Additionally, future backhaul, or fronthaul, networks may want to
-   connect L3 across an L2 underlay supporting Time Sensitive Networks
-   (TSN).  The infrastructure may run DetNet over TSN.  These transit L2
-   LANs would have multiple upstreams and downstreams.  This document is
-   taking a proactive approach to prevention of possible future assert
-   issues in these types of environments.
 
-Authors' Addresses
 
 
 
@@ -1289,6 +1289,17 @@ Liu, et al.             Expires 19 September 2023              [Page 23]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+A.6.  Special L2 services
+
+   Additionally, future backhaul, or fronthaul, networks may want to
+   connect L3 across an L2 underlay supporting Time Sensitive Networks
+   (TSN).  The infrastructure may run DetNet over TSN.  These transit L2
+   LANs would have multiple upstreams and downstreams.  This document is
+   taking a proactive approach to prevention of possible future assert
+   issues in these types of environments.
+
+Authors' Addresses
 
    Yisong Liu (editor)
    China Mobile
@@ -1312,17 +1323,6 @@ Internet-Draft               assert-packing                   March 2023
    ZTE Corporation
    China
    Email: zhang.zheng@zte.com.cn
-
-
-
-
-
-
-
-
-
-
-
 
 
 

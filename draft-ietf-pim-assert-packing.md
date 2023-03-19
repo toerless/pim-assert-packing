@@ -713,7 +713,7 @@ for his RTG AD review.
 
 This document is hosted starting with -06 on https://github.com/toerless/pim-assert-packing.
 
-### draft-ietf-pim-assert-packing-10
+### draft-ietf-pim-assert-packing-11
 
 Thorough AD review by John Scudder.
 
