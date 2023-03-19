@@ -1,0 +1,585 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: John Scudder <jgs@juniper.net>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-pim-assert-packing@ietf.org,
+	pim-chairs@ietf.org, pim@ietf.org, stig@venaas.com,
+	aretana.ietf@gmail.com
+Bcc: 
+Subject: Re: [pim] John Scudder's Discuss on
+ draft-ietf-pim-assert-packing-10: (with DISCUSS and COMMENT)
+Reply-To: 
+In-Reply-To: <167888816398.15538.1306846449318784293@ietfa.amsl.com>
+
+Thanks a lot John!
+
+Great to get a review from a coder perspective.
+
+I hope the replies given below and changes made for the next version
+do resolve your DISCUSS, i certainly think you gave me good food for
+thought that i think improved the text very much in most places you discussed.
+
+If you manage to find time to look at this again before IETF116,
+please use the following github version because Alvaro said he
+would first want to see you acknowledging that the fixes suffice to
+clear your DISCUSS before he would manually commit a new version to datatracker. 
+
+Commit:
+
+https://github.com/toerless/pim-assert-packing/tree/fc9d64f6c74d2c0a1fc3b7a4fb41715b3f70d825
+
+MD file:
+
+https://raw.githubusercontent.com/toerless/pim-assert-packing/fc9d64f6c74d2c0a1fc3b7a4fb41715b3f70d825/draft-ietf-pim-assert-packing.txt
+
+Diff:
+
+https://author-tools.ietf.org/iddiff?url1=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-10.txt&url2=https://raw.githubusercontent.com/toerless/pim-assert-packing/fc9d64f6c74d2c0a1fc3b7a4fb41715b3f70d825/draft-ietf-pim-assert-packing.txt&difftype=--html
+
+I will work on the remaining comments from AD review in parallel.
+
+Cheers
+    Toerless
+
+On Wed, Mar 15, 2023 at 06:49:23AM -0700, John Scudder via Datatracker wrote:
+> John Scudder has entered the following ballot position for
+> draft-ietf-pim-assert-packing-10: Discuss
+> 
+> When responding, please keep the subject line intact and reply to all
+> email addresses included in the To and CC lines. (Feel free to cut this
+> introductory paragraph, however.)
+> 
+> 
+> Please refer to https://www.ietf.org/about/groups/iesg/statements/handling-ballot-positions/ 
+> for more information about how to handle DISCUSS and COMMENT positions.
+> 
+> 
+> The document, along with other ballot positions, can be found here:
+> https://datatracker.ietf.org/doc/draft-ietf-pim-assert-packing/
+> 
+> 
+> 
+> ----------------------------------------------------------------------
+> DISCUSS:
+> ----------------------------------------------------------------------
+> 
+> # John Scudder, RTG AD, comments for draft-ietf-pim-assert-packing-10
+> CC @jgscudder
+> 
+> Thanks for this document, it seems likely to be useful and my DISCUSS
+> notwithstanding, for the most part I found it easy to read and understand.
+> 
+> ## DISCUSS
+> 
+> I am ballotting DISCUSS because although I found the casual, expository style
+> of Section 3.1.1 to be enjoyable to read as a tutorial, I'm concerned that it
+> may not be as well-suited when being used as a reference specification for
+> producing an implementation. And of course, that is the primary purpose of a
+> Standards Track document. Most concerning is the mixture of actual requirements
+> language, with language that's only exemplary -- I found it impossible to
+> determine exactly what parts I have to strictly follow in order to produce a
+> compliant implementation.
+
+Indeed. This is IMHO a somewhat (to me) unique RFC/situation because sending PackedAsserts
+is all a complicated optimization task (how urgent is the assert, what delay
+is incurred, what packet size will result - etc. pp) and i feel there is very little hard
+requirements we can make. But for the ultimate goal of this RFC to come to fruition,
+it does seem to be very prudent to explain the performance impacting aspects
+(where performance is minimum number of duplicates) - and not letting implementers
+try to figure them all out by themselves. Especially given how by now (alas) only
+a small number of PIM implementers are active in the IETF ;-( (different from other
+SDOs dealing with similar issues i think).
+
+> Rather than call out any particular issue here, I refer to the comments section
+> for my various specific points about Section 3.3.1. Let's discuss those, make
+> any changes you agree to, or you can make the case that it's fine as it stands.
+> That is to say, I don't expect this DISCUSS to be blocking in the long term,
+> rather it's here to make sure we do have the discussion. Thanks!
+> 
+> 
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+> 
+> ## COMMENTS
+> 
+> ### Section 3.2, error case
+> 
+>    If the (P)acked flag is 0, the message is a (non-packed) PIM Assert
+>    message as specified in [RFC7761].  See Section 4.2.  In this case,
+>    the (A) flag MUST be set to 0, and MUST be ignored on receipt.
+> 
+> What behavior would be expected in the erroneous case that P = 0, A = 1? Should
+> this be specified here?
+
+Answered twice in the text:
+  "Is a non-packed PIM Assert message as specified in [RFC7761]. See Section 4.2"
+   
+  RFC 7761 specifies to set these bits to 0 and ignore them on receipt.
+  To avoid having to find/read that in RFC 7761, the second sentence
+  reiterates that statement from RFC7761.
+
+Aka: unchanged behavior over RFC7761.
+
+Am i missing something here ? One of us is misreading my text...
+
+> ### Section 3.3.1, aspirational 2119 language
+> 
+>    *  Implementations SHOULD NOT send only Asserts, but no PackedAsserts
+>       under all conditions, when all routers on the LAN do support
+>       Assert Packing.
+> 
+> This is hard to read, but more importantly it seems suspiciously close to the
+> classic "Implementations MUST NOT have bugs" requirement (see RFC 9225 :-). I
+
+Nice. Did forget to check April 1st RFCs last year.
+
+> read it as meaning "if you're going to support PackedAssert, then you should
+> try to be smart about using it whenever it makes sense to." Which is all very
+> well, but just a few paragraphs up you've said it's out of scope for you to
+> tell me what "be smart" means.
+
+This sentence does not ask to be smart. It just asks that implementations SHOULD
+send PackedAsserts somehow, at least sometimes - however dumb that may be. And the prior sentence
+demands that implementation need some form of documentation explaining what they do.
+So the candidate operator - worst case - has a way to know how to replicate a condition
+where the implementation does send PackedAssert and measures its benefits/performance. 
+
+I am still not sure with either Alvaros or your review if you misunderstand
+the sentence or whether you do understand it (as i mean it), but contend its intention.
+So, now the text has the following new replacement which to me is equivalent, easier,
+but in my eyes not equally well self-explanatory (a goal on wich i may have miserably failed
+with the double negative versions ;-).
+
+- Implementations SHOULD support sending of PackedAssert messages.
+  It is out of scope of this specification for which conditions, such as data-triggered asserts or
+  Assert Timer (AT) expiry based asserts, or under which conditions (such as high load) an implementation
+  will send PackedAsserts instead of Asserts.
+
+(I think "SHOULD support sending" is not well explaining what implementation SHOULD avoid:
+ to claim support, but then never ever send PackedAsserts.  Thats why i choose the double negative
+ in before).
+
+And of course this SHOULD is IMHO the minimum normative requirement to ensure
+that when claiming support for the feature it will have any effect.
+(i wish i could come up with stronger normative requirements but given the complexities
+ explained in the doc i want to give the most freedom to implementers to explore them!).
+
+I also reordered the bullet points and added two requirements that will help
+users in assessing the performance of PackedAsserts to support the goal of:
+
+"Give the implementer all the freedom how to do performance optimization, but let it be verifyable".
+
+These two requirements are to be able to disable PackedAsserts, so operator can
+run performance test with/without it, and to provide counters for #messages vs.
+#assert records.
+
+(disabling PackedAsserts not only allows for easier performance comparison but also
+ to avoid having to downgrade OS when there is an unexpected backward compatibility issue).
+
+> In short, it seems to me that this is an aspirational use of RFC 2119 keywords
+> and you'd be better off removing it entirely. If you don't want to do that, at
+> least remove the all-caps in acknowledgment of the fact you aren't specifying
+> anything actionable, and maybe rewrite it in an easier-to-understand way.
+
+> (The stacked negations "SHOULD NOT... but no..." make it pretty hard to parse out
+> the intent.
+
+I hope its clear with rewritten text that "SHOULD support sending" is actionable and
+that the extended additional requirements mentioned above will also
+allow verification of performance enhancements by implementations.
+
+>  Turning it into an affirmative statement, along the lines of
+> "Implementations should use PackedAsserts whenever it would be reasonable to do
+> so" would be more direct, although I still prefer the "just delete the point"
+> option.)
+
+I don't think that "reasonable" is decidable, so it is not a good replacement
+instead of the normative requirement (SHOULD) that i propose in the text, and which
+i think is decidable and actionable.
+
+Of course that normative SHOULD requirement is weaker, so i am happy to add a
+non-normative "should...reasonable" on top of it - if you feel that the now proposed text
+is insufficient to get the best implementation. But i rather think that the detailled
+explanations that follow in the section are more helpfull to explain what imlementers
+actually may find resaonable.
+
+> ### Section 3.3.1, consequences of violating the MUST?
+> 
+>    *  When any PIM routers on the LAN have not signaled support for
+>       Assert Packing, implementations MUST send only Asserts and MUST
+>       NOT send PackedAsserts under any condition.
+> 
+> Am I right to think that the consequence of violating this requirement is that
+> at worst, additional unnecessary traffic is sent on the LAN, plus maybe the
+> non-capable router logs some malformed packet errors?
+
+Yes to additional traffic.
+
+There shuold be no "malformed packet" errors after the fix in -10
+because the zero-byte is a valid but "reserved" IANA address family
+without a registration procedure, aka: reasonably to expect never to be
+registered for something else == unknown == predetermined failure
+without any unforeseen parsing errors. E.g.: "unknown/unsupported Address Family error"
+would be ideal.
+
+> I think this may relate closely to Paul Wouters and Robert Sparks' question
+> about what happens when a non-capable router is introduced to a LAN that's
+> using AssertPacking.
+
+This is answered in reply to Robert:
+
+https://mailarchive.ietf.org/arch/msg/pim/6W54T7Cpj_tp_4JqytKnRmiNU6Q/
+
+The 99% answer part is that it is a non-issue:
+
+In general, a new PIM router would not send data packets until it has received
+joins from a neighbor from it has received PIM Hello in before. And that neighbor
+will not send PIM joins before it has seen the PIM Hello from the neighbor.
+So in general this is a non-issue.
+
+The remaining pathetic situation is more complex but does IMHO not get worse
+through this draft and would require a more convoluted solution which i think
+is not worth it until we have gained more experience with this AssertPacking
+in deployments.
+
+> ### Section 3.3.1, imprecise xrefs, difficult wording
+> 
+>    When a PIM router has an assert record ready to send according to
+>    [RFC7761], it calls send Assert(S,G) / send Assert(_,G)
+>    (Section 4.2), Send Assert(S,G) / SendAssertCancel(S,G)
+>    (Section 4.6.1), Send Assert(_,G) / Send AssertCancel(*,G)
+>    (Section 4.6.2) and send Assert(S,G) (Section 4.8.2).  Each of these
+>    calls will send an Assert message.  When sending of PackedAsserts is
+>    possible on the network, any of these calls is permitted to not send
+>    an Assert message, but only remember the assert record, and let PIM
+>    continue with further processing for other flows that may result in
+>    additional assert records - to finally packed PackedAssert messages
+>    from the remembered assert records and send them.
+> 
+> Please make it clear in line that the cross-references in this paragraph are to
+> sections of RFC 7761, *not* sections of the present document. The obvious way
+> to do this would be to spell it out for each xref, as in "(Section 4.2 of
+> RFC7761)".
+
+I have converted the enumeration to a bullet list each including the
+reference to rfc7761 and the section.
+
+> Also, starting from "permitted to not send", I find this paragraph difficult to
+> follow. Here's an example of a rewrite that works better to my eye, feel free
+> to use any, all, or none of the rewrite. (I haven't fixed the xrefs in the
+> rewrite shown here.)
+> 
+> NEW:
+>    When a PIM router has an assert record ready to send according to
+>    [RFC7761], it calls send Assert(S,G) / send Assert(_,G)
+>    (Section 4.2), Send Assert(S,G) / SendAssertCancel(S,G)
+>    (Section 4.6.1), Send Assert(_,G) / Send AssertCancel(*,G)
+>    (Section 4.6.2) and send Assert(S,G) (Section 4.8.2).  Each of these
+>    calls will send an Assert message.  When sending of PackedAsserts is
+>    possible on the network, any of these calls is permitted to suppress
+>    the immediate transmission of an Assert message, and instead defer
+>    the action, queuing a deferred assert record for later processing.
+>    PIM would then continue with further processing for other flows,
+>    which might result in queuing additional deferred assert records.
+>    Finally, it would process the deferred records, producing and sending
+>    one or more PackedAssert messages to represent them.
+
+Thanks for the proposed text, but i have two concerns:
+
+1) Your proposed "suppress the immediate transmission" is inaccurate in so far as
+that there is no "immediate transmission" for Assert Messages either, but
+instead the buildup of a potentially huge queue of those messages. This is
+the whole reason why we're doing this assert packing work.
+
+2) I also intentionally avoided the term "queuing" because it implies that
+the order of transmission is the order of reception, and this is explicitly
+not needed, and some of the further text highlights examples of when this
+should not be the case (eg.: timing/priorization based on the reason/cas that generated the assert
+record) - you would not be able to do this if you would just blindly put all
+assert records into a (single) queue.
+
+If there is a better term than "remembering", that does not imply ordering,
+i am happy to use it, but i can not think of a better term.
+
+> For that matter, it seems to me that the first two sentences could be replaced
+> with something more compact since presumably the implementor already has to
+> know when they're sending an Assert and doesn't need the full enumeration? Then
+> we'd have something like:
+> 
+>    There are various points in the operation of the protocol [RFC7761]
+>    where a PIM router is specified as sending an Assert message.
+
+I really like to keep the bulleted list now to be precise:
+
+- First time around we (authors) had forgotten assert cancel (Alvaro reminded is)
+- When i first tried to enumerate i didn't find all becauswe they are inconsistently
+  capitalized in rfc7761
+- Section 4.8.2 being completely separate from the rest of the state machinery.
+
+> That would make my first point (about referencing the specific sections in RFC
+> 7761) moot. It would also entail rewriting the third sentence just a little, as
+> in:
+> 
+>    When sending PackedAsserts is possible on the network, the PIM router
+>    MAY suppress the immediate transmission of an Assert message, [...]
+> 
+> And just to put it all together again, that version looks like,
+> 
+> NEW:
+>    There are various points in the operation of the protocol [RFC7761]
+>    where a PIM router is specified as sending an Assert message. When
+>    sending PackedAsserts is possible on the network, the PIM router MAY
+>    suppress the immediate transmission of an Assert message, and instead
+>    defer the action, queuing a deferred assert record for later
+>    processing. PIM would then continue with further processing for other
+>    flows, which might result in queuing additional deferred assert
+>    records. Finally, it would process the deferred records, producing
+>    and sending one or more PackedAssert messages to represent them.
+
+I have changed the proposed text as follows:
+
+When sending of PackedAsserts is possible on the network, any of these calls,
+MAY result not in sending of an Assert message with the assert record,
+but instead in remembering the assert record, and letting PIM continue with
+further processing for other flows that may result in additional assert records.  
+PIM MUST then create PackedAssert messages from the remembered assert records
+and schedule them for sending using the following considerations.
+
+> ### Section 3.3.1, the rest of the section is non-normative I guess?
+> 
+>    To avoid additional delay in this case, the router should employ
+>    appropriate assert packing and scheduling mechanisms, such as for
+>    example the following.
+> 
+> I take the "for example" to mean "since this is only an example, you can also
+> use any other packing and scheduling mechanism you want to, it's up to you".
+> And I take "the following" to mean "the rest of this section". So, putting them
+> together I assume that the entire rest of the section is exemplary, not
+> normative. Is that true? It might be worth putting all the exemplary material
+> in its own subsection, 3.3.1.1, titled something like "example packing and
+> scheduling rules", to make this even clearer.
+
+Yes. the "for example" sounds to vague and it did not refer to the whole rest
+of the section. I think the list of considerations implementations needs to
+take into account and presented in the document is quite exhaustive
+(and unfortunately necessary, hence the possible complexity of the implementation
+unless some simple subset is considered by implementers to be be a sufficient
+subset).
+
+I removed "for example", i changed the sentence to
+
+...create PackedAssert messages from the remembered assert records
+and schedule them for sending according to the considerations of the following
+subsections
+
+And then i subdivided the following text into subsections:
+(simply by inserting those subsection titles - modifications of text itself
+ only according to the following discuss items from you).
+
+#### Handling of reception triggered assert records.
+#### Handling of timer expiry triggered assert records.
+#### Beneficial delay in sending PackedAssert messages
+#### Handling Assert/PackedAssert message loss
+#### Optimal degree of assert record packing
+
+> It's not entirely clear to me that this interpretation is what you intend,
+> though, since toward the end of the section (around where you start talking
+> about DSCP) you seem to want to be prescriptive again. The exercise of creating
+> a separate, exemplary, subsection, might help clean this up. I return to this
+> idea later in this review, in the final paragraph of the point about
+> "sufficient".
+> 
+> ### Section 3.3.1, I don't understand this text
+> 
+> I just couldn't understand what this text meant:
+> 
+>              If there are one or more Assert/PackedAssert messages
+>    serialized and/or scheduled to be serialized, then the router can
+>    pack assert records into new PackedAssert messages until shortly
+>    before the last of those Assert/PackedAssert packets has finished
+>    serializing.
+> 
+> I'd suggest a rewrite if I understood the intent well enough to do so. :-(
+
+New text:
+
+If there are one or more reception triggered Assert/PackedAssert messages already serializing
+and/or scheduled to be serialized on the outgoing interface, then the router can use the time
+until the last of those messages will have finished serializing for PIM processing of further
+conditions that may result in additional reception triggered assert records as well as packing of these assert
+records without introducing additional delay.
+
+> ### Section 3.3.1, relevance of 'relevant'
+> 
+>    "Relevant" is a highly implementation dependent metric and can
+>    typically only be measured against routers of the same type as
+>    receivers, and performance results with other routers will likely
+>    differ.  Therefore it is optional.
+> 
+> Sorry to be obtuse, but what's "it" directly above? I tried to work out what
+> you meant, including searching for other occurrences of the string "relevant",
+> and... I'm still stumped. My best guess is you're referring back to this
+> paragraph:
+> 
+>    Avoiding possible additional and relevant delay because of further
+>    processing is most critical for assert records that are triggered by
+>    reception of data or reception of asserts against which the router is
+>    in the "I am Assert Winner" state.  In these cases the router SHOULD
+>    send out an Assert or PackedAssert message containing this assert
+>    record as soon as possible to minimize the time in which duplicate IP
+>    multicast packets can occur.
+> 
+> and the one I quoted first is the answer to the inevitable "why is this a
+> SHOULD and not a MUST?"... you're saying that an implementation MAY ignore the
+> second quoted paragraph if the implementor deems it to be too difficult to work
+> out what is "relevant", I guess?
+> 
+> It seems strange to predicate a requirement on "relevance" (the SHOULD in the
+> second-quoted paragraph) but then later disclaim being able to define what
+> "relevance" is. If it's not possible to define "relevance" usefully, the RFC
+> 2119 keyword seems inappropriate.
+
+The idea was for delay to only be "relevant" when it reduces actual performance:
+more duplicates than without that delay. Then the non-relevant delay would be
+delay you add, but performance goes up (fewer duplicates). But the reference point was the minimum 
+delay that the two prior paragraphs described. And that comparison was a very advanced concept
+because you might not be able to know this "best possible" reference point because
+you can't implement and measure it.
+
+But when trying to make the text more readable
+based on your review, i figured that i had not addressed the much simpler
+case of simply comparing the performance of whatever delay you choose not against
+the best possible PackedAssert implementations, but solely against the prior
+Assert mechanism. And thats much more important to compare an implementation against.
+
+So, now its called "beneficial" delay, the two paragraphs explaining this delay
+are fixed like this (with a simple example of how it could be done), and the
+last paragraph that you stumbled across is gone.
+
+> ### Section 3.3.1, DSCP reference
+> 
+> Seems like DSCP deserves a reference. Also, "DSCP value", not just "DSCP", I
+> think.
+> 
+Ack. Also added reference.
+
+> ### Section 3.3.1, sufficient
+> 
+> I found the use of the word "sufficient" in this paragraph to be not quite
+> idiomatic, and hard to understand:
+> 
+>    It is sufficient that assert records are not packed up to MTU size,
+>    but to a size that allows the router to achieve the required
+>    operating scale of (S,G) and (*,G) flows with minimum duplicates.
+>    This packing size may be larger when the network is operating with
+>    the maximum number of supported multicast flows, and it can be a
+>    smaller packing size when operating with fewer multicast flows.
+>    Larger than sufficient packets may then not provide additional
+>    benefits, because they only reduce the performance requirements for
+>    packet sending and reception, and other performance limiting factors
+>    may take over once a sufficient size is reached.  And larger packets
+>    can incur more duplicates on loss.  Routers may support a sufficient
+>    amount of packing to minimize the negative impacts of loss of
+>    PackedAssert packets without loss of performance of minimizing IP
+>    multicast packet duplication.
+> 
+> I don't see a simple word-for-word swap that would fix matters. Do you mean
+> something like the following? (This is only a quick-and-dirty attempt, please
+> feel free to use some, all, or none, as you see fit.)
+> 
+>    The optimal target packing size will vary depending on factors
+>    including implementation characteristics and the required operating
+>    scale. At some point, as the target packing size is varied from the
+>    size of a single non-packed Assert, to the MTU size, a size can be
+>    expected to be found where the router can achieve the required
+>    operating scale of (S,G) and (*,G) flows with minimum duplicates.
+>    Beyond this size, a further increase in the target packing size would
+>    not produce further benefits, but might introduce possible negative
+>    effects such as the incurrence of more duplicates on loss.
+
+Thanks. Nice. Used.
+
+Subsection title also changed to Optimal degree of assert record packing
+
+I also added a more explicit and easily understood example:
+
+For example, in some router implementations, the total number of
+packets that a control plane function such as PIM can send/receive
+per unit of time is a more limiting factor than the total amount
+of data across these packets. As soon as the packet size is large
+enough for the maximum possible payload througput, increasing the
+packet size any further may still reduce the processing overhead
+of the router, but may increase latency incurred in creating the
+packet in a way that may increase duplicates compared to smaller
+packets.
+
+
+> It seems like there's a case for breaking 3.3.1 into three subsections, in
+> fact: a normative subsection, an exemplary subsection, and a subsection on
+> implementation tuning.
+
+See above.
+> 
+> ### Section 4.4.2, why the micro-optimization?
+> 
+> I had to read this a few times to understand the Group Record encoding:
+> 
+>       The Number of Sources is corresponding to the number of Source
+>       Address fields in the Group Record.  If this number is 0, the
+>       Group Record indicates one assert record with a Source Address of
+>       0.  If this number is not 0 and one of the (*,G) assert records to
+>       be encoded should have the Source Address 0, then 0 needs to be
+>       encoded as one of the Source Address fields.
+> 
+> If I've understood this correctly, you're providing two different ways to
+> encode the Source Address of zero, so that you can save four bytes in the case
+> where there is only one record and its SA is 0. Is this case so prevalent that
+> it's worth forcing implementations to provide a special code path for it?
+
+I think in many cases, 50% of assert records can be (*,G) assert records
+without source records (typical case where you have not SSM, but 
+PIM-SM with one source per group, source is on shortest path (can not use
+the source aggregation record), so 50% are (*,G) without sources.
+
+So maybe (very) roughly speaking we're saving 25% total amount of bytes
+across thousands of such asserts (50% for the (S,G), 50% for the (*,G) and
+we save ca. 50% of data for the (*,G)).
+
+And i felt that both sending/receiving code path actually would be simpler
+for this most common case, so the much less likely case of passing
+multiple (S,G,RPbit) records from assert reception to PIM machinery
+(aka: when Number of Source > 0) could be implemented with less optimization
+in mind.
+
+Aka: I think it is a win/win compression and code-path.
+
+And nobody is forced to generate the Number of Source = 0 option on sending,
+just reception is mandatory.
+
+> ## NITS
+> 
+> - an assert losers state would -> an assert loser's state would (apostrophe)
+> - PacketAssert -> PackedAssert
+> - Assert messages where -> Assert messages were
+> - As specified in Section 3.2 below -> (delete the "below", Section 3.2 is
+> above.)
+
+All fixed.
+
+> ## Notes
+> 
+> This review is in the ["IETF Comments" Markdown format][ICMF], You can use the
+> [`ietf-comments` tool][ICT] to automatically convert this review into
+> individual GitHub issues.
+> 
+> [ICMF]: https://github.com/mnot/ietf-comments/blob/main/format.md
+> [ICT]: https://github.com/mnot/ietf-comments
+
+100% special points for making me aware of this. Not that i would benefit
+from it myself ;-P, but given how i like to write contiguous reviews in my
+WG as well, and most co-authors there love/use github, i think i'll learn
+to use this tagging myself for them!
+
+Many thanks again!
+
+Cheers
+    Toerless
