@@ -1,0 +1,91 @@
+From tte@cs.fau.de Wed Mar 15 06:25:21 2023
+Date: Wed, 15 Mar 2023 06:25:21 +0100
+From: Toerless Eckert <tte@cs.fau.de>
+To: Paul Wouters <paul.wouters@aiven.io>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-pim-assert-packing@ietf.org,
+	pim-chairs@ietf.org, pim@ietf.org, stig@venaas.com,
+	aretana.ietf@gmail.com
+Subject: Re: [pim] Paul Wouters' No Objection on
+ draft-ietf-pim-assert-packing-10: (with COMMENT)
+Message-ID: <ZBFWwd/IQTjSB5ba@faui48e.informatik.uni-erlangen.de>
+References: <167884459389.25625.8459361908215997016@ietfa.amsl.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <167884459389.25625.8459361908215997016@ietfa.amsl.com>
+Status: RO
+Content-Length: 2709
+Lines: 69
+
+Thanks, Paul
+
+reply Q/answers inline
+
+On Tue, Mar 14, 2023 at 06:43:13PM -0700, Paul Wouters via Datatracker wrote:
+> Paul Wouters has entered the following ballot position for
+> draft-ietf-pim-assert-packing-10: No Objection
+> 
+> When responding, please keep the subject line intact and reply to all
+> email addresses included in the To and CC lines. (Feel free to cut this
+> introductory paragraph, however.)
+> 
+> 
+> Please refer to https://www.ietf.org/about/groups/iesg/statements/handling-ballot-positions/ 
+> for more information about how to handle DISCUSS and COMMENT positions.
+> 
+> 
+> The document, along with other ballot positions, can be found here:
+> https://datatracker.ietf.org/doc/draft-ietf-pim-assert-packing/
+> 
+> 
+> 
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+> 
+>         M: The number of Assert Records in the message. Derived from the length
+>         of the packet carrying the message.
+> 
+> I find it a bit odd that this section describes packet fields, and then lists a
+> "field" that is not a real field but a derivation. Can this not be written
+> without the "M:" classifier and outside of the list describing the packet
+> fields? This occurs a number of times in the document.
+
+I hope the following rewrite solves the concern: 
+
+From:
+
+ *  M: The number of Assert Records in the message.  Derived from the
+      length of the packet carrying the message.
+
+   The format of each Assert Record is the same as the PIM assert
+   message body as specified in Section 4.9.6 of [RFC7761].
+
+To:
+ *  Assert Record: formatted according to Figure 4, wich is the same
+    as the PIM assert message body as specified in Section 4.9.6 of [RFC7761].
+    The number M of Assert Records is determined from the packet size.
+
+I found this for M:  in 4.3 and 4.4 (change in 4.4 equivalent).
+Did not find other occurrances of this textual inconsistency.
+
+
+> Like Robert Sparks, I am interested his question from the secdir review:
+> 
+>    There's discussion of not using packing unless all PIM
+>    routers in the same subnet have announced the Assert Packing Hello Option.
+>    What happens in a running environment that is busy using packing when a new
+>    PIM router is added? If traffic from that PIM router is seen that is not yet
+>    the needed Hello Option, should all senders stop packing until the needed
+>    Hello Option arrives, and maybe resend recently packed asserts as unpacked?
+
+Reply to Robert in:
+  https://mailarchive.ietf.org/arch/msg/pim/6W54T7Cpj_tp_4JqytKnRmiNU6Q
+
+Pls let me know if you see insufficiencies in that answer that would
+cause a need for draft text enhancements in your opinion (such as what
+i wrote to Robert).
+
+Cheers
+    Toerless
+

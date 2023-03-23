@@ -1,0 +1,77 @@
+From tte@cs.fau.de Fri Mar 10 21:10:20 2023
+Date: Fri, 10 Mar 2023 21:10:20 +0100
+From: Toerless Eckert <tte@cs.fau.de>
+To: Erik Kline <ek.ietf@gmail.com>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-pim-assert-packing@ietf.org,
+	pim-chairs@ietf.org, pim@ietf.org, stig@venaas.com,
+	aretana.ietf@gmail.com
+Subject: Re: Erik Kline's No Objection on draft-ietf-pim-assert-packing-10:
+ (with COMMENT)
+Message-ID: <ZAuOrLkYTPUju1Qs@faui48e.informatik.uni-erlangen.de>
+References: <167842693758.23936.10705876500387245320@ietfa.amsl.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <167842693758.23936.10705876500387245320@ietfa.amsl.com>
+Status: RO
+Content-Length: 1805
+Lines: 57
+
+Thanks, Eric.
+
+The simple answer is: No, the document intends to solve the problem for
+subnets with 3 or more PIM routers. So for the purpose of just the document
+being correct i think we're fine.
+
+Having said this:
+
+The complex answer is: There can be asserts not caused by PIM itself, but
+because of IGMP/MLD, and these can happen with 2 or more routers. But the
+document does not explicitly try to address them, because there should be
+better solutions than asserts (and hence assert packing) to solve duplicates
+resulting from IGMP/MLD. So i would not even want to promote assert packing
+to solve this issue, even if it potentially could help as long as the
+better solutions are not deployed.
+
+Cheers
+    Toerless
+
+On Thu, Mar 09, 2023 at 09:42:17PM -0800, Erik Kline via Datatracker wrote:
+> Erik Kline has entered the following ballot position for
+> draft-ietf-pim-assert-packing-10: No Objection
+> 
+> When responding, please keep the subject line intact and reply to all
+> email addresses included in the To and CC lines. (Feel free to cut this
+> introductory paragraph, however.)
+> 
+> 
+> Please refer to https://www.ietf.org/about/groups/iesg/statements/handling-ballot-positions/ 
+> for more information about how to handle DISCUSS and COMMENT positions.
+> 
+> 
+> The document, along with other ballot positions, can be found here:
+> https://datatracker.ietf.org/doc/draft-ietf-pim-assert-packing/
+> 
+> 
+> 
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+> 
+> # Internet AD comments for draft-ietf-pim-assert-packing-10
+> CC @ekline
+> 
+> ## Nits
+> 
+> ### S2
+> 
+> * "with more than 2 PIM routers"
+> 
+>   Should this actually read "with 2 or more PIM routers"?
+> 
+> 
+
+-- 
+---
+tte@cs.fau.de
+

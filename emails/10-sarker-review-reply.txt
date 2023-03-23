@@ -1,0 +1,76 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Zaheduzzaman Sarker <Zaheduzzaman.Sarker@ericsson.com>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-pim-assert-packing@ietf.org,
+	pim-chairs@ietf.org, pim@ietf.org, stig@venaas.com,
+	aretana.ietf@gmail.com
+Bcc: 
+Subject: Re: Zaheduzzaman Sarker's No Objection on
+ draft-ietf-pim-assert-packing-10: (with COMMENT)
+Reply-To: 
+In-Reply-To: <167897399409.27858.5333744764922141490@ietfa.amsl.com>
+
+
+Thanks, Zaheduzzaman,
+
+replies inline
+
+On Thu, Mar 16, 2023 at 06:39:54AM -0700, Zaheduzzaman Sarker via Datatracker wrote:
+> Zaheduzzaman Sarker has entered the following ballot position for
+> draft-ietf-pim-assert-packing-10: No Objection
+> 
+> When responding, please keep the subject line intact and reply to all
+> email addresses included in the To and CC lines. (Feel free to cut this
+> introductory paragraph, however.)
+> 
+> 
+> Please refer to https://www.ietf.org/about/groups/iesg/statements/handling-ballot-positions/ 
+> for more information about how to handle DISCUSS and COMMENT positions.
+> 
+> 
+> The document, along with other ballot positions, can be found here:
+> https://datatracker.ietf.org/doc/draft-ietf-pim-assert-packing/
+> 
+> 
+> 
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+> 
+> Thanks for working on this specification. Thanks Tommy Pauly for the TSVART
+> review, I also agree that congestion control for PIM would be a good exercise
+> specially when we are expecting negative impact of loss due to buffer overflow
+> and repetitive burst of traffic.
+
+Thanks. I'll continue to push PIM work to use PIM over TCP as much as possible.
+
+Alas, for asserts this does not solve the problem of having to deliver them
+as fast as possible (hence this draft), because of the fundamental CC misdesign
+of PIM for the data plane:
+
+"Oh, someone wants traffic from me. Let me start sending, and if that should
+ overload the network badly because its all duplicates, well, hopefully someone
+ will quickly send me an asserts to stop me" ...
+
+> I agree with John's discuss point that it is a bit confusing to see the mix of
+> normative and non-normative text. for example - it says.
+> 
+>     Routers may support a sufficient
+>    amount of packing to minimize the negative impacts of loss of
+>    PackedAssert packets without loss of performance of minimizing IP
+>    multicast packet duplication.
+> 
+> According to the description preceding that line, this seems like at the level
+> where we should normative language but it was not.
+
+John provided replacement text and i added a hopefully trivial but common
+example reasoning in a second paragraph. This is now section 3.3.1.5.
+
+As i admitted to John, discussion about performance enhancing functions and
+their implementations are challenging to get done "right" in a standards
+spec - and trying to come up with a much harder textual split between
+normative and informative aspects of this might not have improved readability.
+I hope this is well readible now after JohnC's thorough review and my feedback
+to it.
+
+Cheers
+    Toerless

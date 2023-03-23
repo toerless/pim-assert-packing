@@ -1,0 +1,138 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Éric Vyncke <evyncke@cisco.com>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-pim-assert-packing@ietf.org,
+	pim-chairs@ietf.org, pim@ietf.org, stig@venaas.com,
+	aretana.ietf@gmail.com
+Bcc: 
+Subject: Re: [pim] Éric Vyncke's No Objection on
+ draft-ietf-pim-assert-packing-10: (with COMMENT)
+Reply-To: 
+In-Reply-To: <167897285612.3230.189721272161382244@ietfa.amsl.com>
+
+On Thu, Mar 16, 2023 at 06:20:56AM -0700, Éric Vyncke via Datatracker wrote:
+> Éric Vyncke has entered the following ballot position for
+> draft-ietf-pim-assert-packing-10: No Objection
+> 
+> When responding, please keep the subject line intact and reply to all
+> email addresses included in the To and CC lines. (Feel free to cut this
+> introductory paragraph, however.)
+> 
+> 
+> Please refer to https://www.ietf.org/about/groups/iesg/statements/handling-ballot-positions/ 
+> for more information about how to handle DISCUSS and COMMENT positions.
+> 
+> 
+> The document, along with other ballot positions, can be found here:
+> https://datatracker.ietf.org/doc/draft-ietf-pim-assert-packing/
+> 
+> 
+> 
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+> 
+> 
+> # Éric Vyncke, INT AD, comments for draft-ietf-pim-assert-packing-10
+> CC @evyncke
+> 
+> Thank you for the work put into this document.
+> 
+> Please find below some non-blocking COMMENT points (but replies would be
+> appreciated even if only for my own education), and one nit.
+> 
+> Special thanks to Stig Venaas for the shepherd's detailed write-up including
+> the WG consensus **but** it lacks the justification of the intended status.
+
+I would not know right now which RFC to consult for official critera, but
+technically off the top of my head:
+
+- Its an on-the-wire-change, so impacts interoperability
+
+- Asserts are a known issue to limit RFC7761 scale and relaibility/performance under scale/load
+  because of duplicate packets, overloads caused by them, loss casusused by them.
+
+- Proposed solution is well simple optimizationn, so no big difficult new concepts that would
+  have us go for experimental first.
+
+With anything performance optimization there is of course a good amount that lies
+in implementations finding the minimum complexity implementation for the best performance
+improvement. Thats not something that can fully be captured, but we tried to do the best
+in the spec. Some more example/details are given in reply to John Scudder.
+
+Further replies inline below as expected.
+
+> Regards,
+> 
+> -éric
+> 
+> ## COMMENTS
+> 
+> ### Section 1
+> 
+> `there is typically more than one upstream router` unsure whether it is really
+> the common case... Suggest to s/there is typically/Sometimes there is/
+
+I have changed this to be like the first sentence of the Intro, aka: scoped to
+LANs where PIM is used. I think "often" is fair because PIM is really used
+primarily in professional networks, and those do often use redundant
+routers for resiliency against router failure. The mayor case where in
+my experience this doesn't mean redundant routers at the PIM layer is when
+you have some vendor-specific chassis-redundancy solution instead of an IETF/PIM
+standards based redundancy setup. That is why i picked "often" instead of "most often".
+
+> ### Section 2
+> 
+> Should there be references for assertions such as `something not possible
+> equally with an L3 subnet based ring`?
+
+
+Expanded paragraph to be more precise and give examples:
+
+These L3 ring designs are specifically undesirable, when particular L2 technologies are needed.
+For example various L2 technologies for rings provide sub 50msec failover
+mechanisms that will benefit IP unicast and multicast alike without any
+added complexity to the IP layer (forwarding or routing). If such L2 rings where to be replaced
+by L3 rings just to avoid PIM asserts, then this would result in the need for
+a complex choice of of a sub 50 msec IP unicast failover solutions as well
+as a sub 50 msec IP multicast failover solution. The mere fact that by
+operating at the IP layer, different solutions for IP unicast and multicast
+are required makes them more difficult to operate, they typically require more
+expensive hardware and therefore most often, they are not even available
+on the target equipment, such as {{RFC7490}} with IP repair tunnels for IP unicast or
+{{RFC7431}} for IP multicast.
+
+> ### Section 4.2
+> 
+> *Strongly* suggest to add a reference to section 4.9.1 of RFC 7761 for the
+> `encoded-* format` (as my heart missed a beat when seeing a 32-bit field).
+
+Haha. Isn't this a beautify way to hide the bits-on-the-wire overhead of IPv6
+from specs ;-)
+
+Added:
+
+The Encoded-Group and Encoded-Unicast address formats are specified in Section 4.9.1 of
+{{RFC7761} for IP and IPv6. 
+
+> ## NITS
+> 
+> ### Units
+> 
+> s/100msec/100 msec/ and other similar issues.
+
+Fixed.
+
+
+Thanks!
+
+Toerless
+
+> 
+> ## Notes
+> 
+> This review is in the ["IETF Comments" Markdown format][ICMF], You can use the
+> [`ietf-comments` tool][ICT] to automatically convert this review into
+> individual GitHub issues.
+> 
+> [ICMF]: https://github.com/mnot/ietf-comments/blob/main/format.md
+> [ICT]: https://github.com/mnot/ietf-comments
