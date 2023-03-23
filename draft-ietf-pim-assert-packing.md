@@ -222,7 +222,8 @@ their semantic. They are just transmitted in fewer but larger packets and fewer 
 ### Sending PackedAssert messages
 
 When using assert packing, the regular {{RFC7761}} Assert message encoding with A=0 and P=0 is
-still allowed to be sent.  Routers are free to choose which PackedAssert message format they send. 
+still allowed to be sent.  Routers are free to choose which PackedAssert message format they send 
+- simple ({{simple-packedassert-message}}) and/or aggregated ({{aggregated-packedassert-message}}). 
 
 - When any PIM routers on the LAN have not signaled support for Assert Packing,
   implementations MUST send only Asserts and MUST NOT send PackedAsserts under
@@ -230,16 +231,21 @@ still allowed to be sent.  Routers are free to choose which PackedAssert message
 
 - Implementations SHOULD support sending of PackedAssert messages.
   It is out of scope of this specification for which conditions, such as data-triggered asserts or 
-  Assert Timer (AT) expiry based asserts, or under which conditions (such as high load) an implementation
+  Assert Timer (AT) expiry-triggered asserts, or under which conditions (such as high load) an implementation
   will send PackedAsserts instead of Asserts.
 
 - Implementations are expected to specify in documentation and/or management interfaces (such as a YANG model),
   which PackedAssert message formats they can send and under which conditions they will send them. 
 
 - Implementations SHOULD be able to indicate to the operator (such as through a YANG model)
-  how many Assert and PackedAssert messages were sent/received and how many assert records where sent/received.
+  how many Assert and PackedAssert messages were sent/received and how many assert records were sent/received.
 
 - Implementations that introduce support for PackedAsserts after support for Asserts SHOULD support configuration that disables PackedAssert operations.
+
+- A configuration option SHOULD be available to disable PackedAssert operations.
+  Implementations that introduce support for assert packing from day one of
+  their {{RFC7761}} implementation MAY omit this configuration option.
+
 
 When a PIM router has an assert record ready to send according to
 {{RFC7761}}, it calls one of the following functions:
@@ -249,15 +255,16 @@ When a PIM router has an assert record ready to send according to
 - Send Assert(\*,G) / Send AssertCancel(\*,G) ({{RFC7761}}, Section 4.6.2)
 - send Assert(S,G) ({{RFC7761}}, Section 4.8.2). 
 
-When sending of PackedAsserts is possible on the network, any of these calls,
-MAY not result in sending of an Assert message with the assert record,
-but instead in remembering the assert record, and letting PIM continue with
-further processing for other flows that may result in additional assert records. 
+If sending of PackedAsserts is possible on the network,
+instead of sending an Assert message with an assert record, any of these
+calls MAY instead result in the PIM implementation remembering the assert record,
+and continueing with further processing for other flows which may result in additional assert records. 
+
 PIM MUST then create PackedAssert messages from the remembered assert records
 and schedule them for sending according to the considerations of the following
 subsections.
 
-#### Handling of reception triggered assert records.
+#### Handling of reception-triggered assert records.
 
 Avoiding additional delay because of assert packing compared to immediate scheduling of
 Assert messages is most critical for assert records that are triggered by
@@ -269,42 +276,45 @@ as soon as possible to minimize the time in which duplicate IP multicast packets
 To avoid additional delay in this case, the router should employ appropriate
 assert packing and scheduling mechanisms, as explained here.
 
-Asserts/PackedAsserts in this case are scheduled for serialization with highest priority, such
-that they bypass any potentially earlier scheduled other packets.
-When there is no such Assert/PackedAssert message scheduled for or being serialized,
-the router immediately serializes an Assert or PackedAssert message without further assert packing.
+Asserts/PackedAsserts created from reception-triggered assert records should be scheduled
+for serialization with a higher priority than those created from other reasons. They
+should also bypass other PIM messages that can create significant bursts, such as PIM join/prune messages.
 
-If there are one or more reception triggered Assert/PackedAssert messages already serializing
+When there is no reception-triggered Assert/PackedAssert messages currently being serialized
+on the interface or scheduled to be sent, the router should immediately generate
+and schedule an Assert or PackedAssert message without further assert packing.
+
+If there are one or more reception-triggered Assert/PackedAssert messages already serializing
 and/or scheduled to be serialized on the outgoing interface, then the router can use the time
 until the last of those messages will have finished serializing for PIM processing of further
-conditions that may result in additional reception triggered assert records as well as packing of these assert
+conditions that may result in additional reception-triggered assert records as well as packing of these assert
 records without introducing additional delay.
 
-#### Handling of timer expiry triggered assert records.
+#### Handling of timer expiry-triggered assert records.
 
 Asserts triggered by expiry of the AT on an assert winner are not time-critical because
 they can be scheduled in advance and because the Assert_Override_Interval parameter of {{RFC7761}} already
 creates a 3 second window in which such assert records can be sent, received, and processed before
 an assert loser's state would expire and duplicate IP multicast packets could occur.
 
-An example mechanism to allow packing of AT expiry triggered assert records on assert winners is
+An example mechanism to allow packing of AT expiry-triggered assert records on assert winners is
 to round the AT to an appropriate granularity such as 100msec.  This will cause AT for multiple
 (S,G) and/or (\*,G) states to expire at the same time, thus allowing them to be easily packed
 without changes to the assert state machinery.
 
 AssertCancel messages have assert records with an infinite metric and can use assert packing
 as any other Assert. They are sent on Override Timer (OT) expiry and can be packed for example
-with the same considerations as AT expiry triggered assert records.
+with the same considerations as AT expiry-triggered assert records.
 
 #### Beneficial delay in sending PackedAssert messages {#beneficial}
 
-Delay in sending PackedAsserts beyond what was discussed in prior subsectons can still be beneficial when
+Delay in sending PackedAsserts beyond what was discussed in prior subsections can still be beneficial when
 it causes the overall amount of (possible) duplicate IP multicast packets to decrease in a condition with
 large number of (S,G) and/or (\*,G), compared to the situation in which an implementation only
 sends Assert messages.
 
 This delay can simply be used in implementations because it can not support the (more advanced)
-mechanisms described above, and this longer delay can be achieve by some simpler mechanism 
+mechanisms described above, and this longer delay can be achieved by some simpler mechanism 
 (such as only periodic generation of PackedAsserts) and still achieves an overall reduction
 in duplicate IP multicast packets compared to sending only Asserts.
 
@@ -343,7 +353,7 @@ For example, in some router implementations, the total number of
 packets that a control plane function such as PIM can send/receive
 per unit of time is a more limiting factor than the total amount
 of data across these packets. As soon as the packet size is large
-enough for the maximum possible payload througput, increasing the
+enough for the maximum possible payload throughput, increasing the
 packet size any further may still reduce the processing overhead
 of the router, but may increase latency incurred in creating the
 packet in a way that may increase duplicates compared to smaller
@@ -694,6 +704,14 @@ described in Section 6.1 of {{RFC7761}}, a forged Assert message could
 cause the legitimate designated forwarder to stop forwarding traffic
 to the LAN. The effect may be amplified when using a PackedAssert message.
 
+Like other optional extensions of {{RFC7761}} that are active
+only when all routers indicate support for them, a single misconfigured or malicious
+router emitting forged PIM Hello messages can inhibit operations of this extension.
+
+Authentication of PIM messages such as explained in {{RFC7761}}, Sections 6.2 and 6.3 can
+protect against the forged message attacks attacks.
+
+
 # Acknowledgments
 
 The authors would like to thank: Stig Venaas for the valuable
@@ -720,6 +738,8 @@ Thorough AD review by John Scudder.
 Functional enhancement: add requirement for existing implementation to be able to disable assert packing so that any possible compatibility issues introduced (which we think will not happen) can be avoided when upgrading to a packedassert version of the software. Also to allow performance comparison. No making a requirement for day 0 implementations because they may want to save the work of having a non-packed-assert code path.
 
 Some rewrite to increase readibility, subdivided 3.3.1 into multiple subsections to better structure it.
+
+Second round: some additional refinements to limit scope of prioriziation of messages, added security considerations.
 
 Some nits.
 
