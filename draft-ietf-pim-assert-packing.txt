@@ -17,7 +17,7 @@ Expires: 25 September 2023                                    M. McBride
 
 Abstract
 
-   In PIM-SM shared LANs networks, there is often more than one upstream
+   In PIM-SM shared LAN networks, there is often more than one upstream
    router.  When PIM Sparse Mode (PIM-SM), including PIM Source
    Specific-Specific Multicast (PIM-SSM), is used, this can lead to
    duplicate IP multicast packets being forwarded by these PIM routers.
@@ -76,13 +76,21 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3
-     1.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   4
    2.  Problem Statement . . . . . . . . . . . . . . . . . . . . . .   4
-   3.  Specification . . . . . . . . . . . . . . . . . . . . . . . .   4
+   3.  Specification . . . . . . . . . . . . . . . . . . . . . . . .   5
      3.1.  PIM Assert Packing Hello Option . . . . . . . . . . . . .   5
      3.2.  Assert Packing Message Formats  . . . . . . . . . . . . .   5
      3.3.  PackedAssert Mechanism  . . . . . . . . . . . . . . . . .   6
-       3.3.1.  Sending PackedAssert messages . . . . . . . . . . . .   6
+       3.3.1.  Sending PackedAssert messages . . . . . . . . . . . .   7
+         3.3.1.1.  Handling of reception-triggered assert
+                 records.  . . . . . . . . . . . . . . . . . . . . .   8
+         3.3.1.2.  Handling of timer expiry-triggered assert
+                 records.  . . . . . . . . . . . . . . . . . . . . .   9
+         3.3.1.3.  Beneficial delay in sending PackedAssert
+                 messages  . . . . . . . . . . . . . . . . . . . . .   9
+         3.3.1.4.  Handling Assert/PackedAssert message loss . . . .   9
+         3.3.1.5.  Optimal degree of assert record packing . . . . .  10
        3.3.2.  Receiving PackedAssert messages . . . . . . . . . . .  10
    4.  Packet Formats  . . . . . . . . . . . . . . . . . . . . . . .  10
      4.1.  PIM Assert Packing Hello Option . . . . . . . . . . . . .  10
@@ -98,14 +106,6 @@ Table of Contents
      8.1.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  19
      8.2.  Changelog . . . . . . . . . . . . . . . . . . . . . . . .  19
        8.2.1.  draft-ietf-pim-assert-packing-11  . . . . . . . . . .  19
-       8.2.2.  draft-ietf-pim-assert-packing-10  . . . . . . . . . .  20
-       8.2.3.  draft-ietf-pim-assert-packing-09  . . . . . . . . . .  20
-       8.2.4.  draft-ietf-pim-assert-packing-08  . . . . . . . . . .  21
-       8.2.5.  draft-ietf-pim-assert-packing-07  . . . . . . . . . .  21
-       8.2.6.  draft-ietf-pim-assert-packing-06  . . . . . . . . . .  21
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  21
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  21
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .  22
 
 
 
@@ -114,14 +114,22 @@ Liu, et al.             Expires 25 September 2023               [Page 2]
 Internet-Draft               assert-packing                   March 2023
 
 
+       8.2.2.  draft-ietf-pim-assert-packing-10  . . . . . . . . . .  20
+       8.2.3.  draft-ietf-pim-assert-packing-09  . . . . . . . . . .  20
+       8.2.4.  draft-ietf-pim-assert-packing-08  . . . . . . . . . .  21
+       8.2.5.  draft-ietf-pim-assert-packing-07  . . . . . . . . . .  22
+       8.2.6.  draft-ietf-pim-assert-packing-06  . . . . . . . . . .  22
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  22
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  22
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .  23
    Appendix A.  Use case examples  . . . . . . . . . . . . . . . . .  23
-     A.1.  Enterprise network  . . . . . . . . . . . . . . . . . . .  23
-     A.2.  Video surveillance  . . . . . . . . . . . . . . . . . . .  23
+     A.1.  Enterprise network  . . . . . . . . . . . . . . . . . . .  24
+     A.2.  Video surveillance  . . . . . . . . . . . . . . . . . . .  24
      A.3.  Financial Services  . . . . . . . . . . . . . . . . . . .  24
      A.4.  IPTV broadcast Video  . . . . . . . . . . . . . . . . . .  24
-     A.5.  MVPN MDT  . . . . . . . . . . . . . . . . . . . . . . . .  24
-     A.6.  Special L2 services . . . . . . . . . . . . . . . . . . .  24
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  24
+     A.5.  MVPN MDT  . . . . . . . . . . . . . . . . . . . . . . . .  25
+     A.6.  Special L2 services . . . . . . . . . . . . . . . . . . .  25
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  25
 
 1.  Introduction
 
@@ -153,6 +161,15 @@ Internet-Draft               assert-packing                   March 2023
    14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
+
+
+
+
+Liu, et al.             Expires 25 September 2023               [Page 3]
+
+Internet-Draft               assert-packing                   March 2023
+
+
 1.2.  Terminology
 
    The reader is expected to be familiar with the terminology of
@@ -162,13 +179,6 @@ Internet-Draft               assert-packing                   March 2023
    AT: Assert Timer
 
    RP: Rendezvous Point
-
-
-
-Liu, et al.             Expires 25 September 2023               [Page 3]
-
-Internet-Draft               assert-packing                   March 2023
-
 
    RPF: Reverse Path Forwarding
 
@@ -208,6 +218,14 @@ Internet-Draft               assert-packing                   March 2023
    These designs are also not feasible when specific L2 technologies are
    needed.  For example various L2 technologies for rings provide sub 50
    msec failover mechanisms, something not possible equally with an L5
+
+
+
+Liu, et al.             Expires 25 September 2023               [Page 4]
+
+Internet-Draft               assert-packing                   March 2023
+
+
    subnet based ring.  Likewise, IEEE Time Sensitive Networking
    mechanisms would require an L2 topology that can not simply be
    replaced by an L3 topology.  L2 sub-topologies can also significantly
@@ -217,14 +235,6 @@ Internet-Draft               assert-packing                   March 2023
 
    This document defines three elements in support of PIM assert
    packing:
-
-
-
-
-Liu, et al.             Expires 25 September 2023               [Page 4]
-
-Internet-Draft               assert-packing                   March 2023
-
 
    1.  The PIM Assert Packing Hello Option.
 
@@ -263,16 +273,6 @@ Internet-Draft               assert-packing                   March 2023
    If A=0, then the message body is a sequence of assert records.  This
    is called a "Simple PackedAssert" message.  See Section 4.3.
 
-   If A=1, then the message body is a sequence of aggregated assert
-   records.  This is called an "Aggregated PackedAssert".  See
-   Section 4.4.
-
-   Two aggregated assert record types are specified.
-
-
-
-
-
 
 
 
@@ -281,6 +281,12 @@ Liu, et al.             Expires 25 September 2023               [Page 5]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+   If A=1, then the message body is a sequence of aggregated assert
+   records.  This is called an "Aggregated PackedAssert".  See
+   Section 4.4.
+
+   Two aggregated assert record types are specified.
 
    The "Source Aggregated Assert Record", see Section 4.4.1, encodes one
    (common) Source Address, Metric and Metric Preference as well as a
@@ -324,12 +330,6 @@ Internet-Draft               assert-packing                   March 2023
    routers should be able to send/receive assert records faster and/or
    with less processing overhead.
 
-3.3.1.  Sending PackedAssert messages
-
-   When using assert packing, the regular [RFC7761] Assert message
-   encoding with A=0 and P=0 is still allowed to be sent.  Routers are
-   free to choose which PackedAssert message format they send - simple
-   (Section 4.3) and/or aggregated (Section 4.4).
 
 
 
@@ -337,6 +337,13 @@ Liu, et al.             Expires 25 September 2023               [Page 6]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+3.3.1.  Sending PackedAssert messages
+
+   When using assert packing, the regular [RFC7761] Assert message
+   encoding with A=0 and P=0 is still allowed to be sent.  Routers are
+   free to choose which PackedAssert message format they send - simple
+   (Section 4.3) and/or aggregated (Section 4.4).
 
    *  When any PIM routers on the LAN have not signaled support for
       Assert Packing, implementations MUST send only Asserts and MUST
@@ -379,13 +386,6 @@ Internet-Draft               assert-packing                   March 2023
 
    *  send Assert(S,G) ([RFC7761], Section 4.8.2).
 
-   If sending of PackedAsserts is possible on the network, instead of
-   sending an Assert message with an assert record, any of these calls
-   MAY instead result in the PIM implementation remembering the assert
-   record, and continueing with further processing for other flows which
-   may result in additional assert records.
-
-
 
 
 
@@ -393,6 +393,12 @@ Liu, et al.             Expires 25 September 2023               [Page 7]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+   If sending of PackedAsserts is possible on the network, instead of
+   sending an Assert message with an assert record, any of these calls
+   MAY instead result in the PIM implementation remembering the assert
+   record, and continueing with further processing for other flows which
+   may result in additional assert records.
 
    PIM MUST then create PackedAssert messages from the remembered assert
    records and schedule them for sending according to the considerations
@@ -432,14 +438,8 @@ Internet-Draft               assert-packing                   March 2023
    triggered assert records as well as packing of these assert records
    without introducing additional delay.
 
-3.3.1.2.  Handling of timer expiry-triggered assert records.
 
-   Asserts triggered by expiry of the AT on an assert winner are not
-   time-critical because they can be scheduled in advance and because
-   the Assert_Override_Interval parameter of [RFC7761] already creates a
-   3 second window in which such assert records can be sent, received,
-   and processed before an assert loser's state would expire and
-   duplicate IP multicast packets could occur.
+
 
 
 
@@ -449,6 +449,15 @@ Liu, et al.             Expires 25 September 2023               [Page 8]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+3.3.1.2.  Handling of timer expiry-triggered assert records.
+
+   Asserts triggered by expiry of the AT on an assert winner are not
+   time-critical because they can be scheduled in advance and because
+   the Assert_Override_Interval parameter of [RFC7761] already creates a
+   3 second window in which such assert records can be sent, received,
+   and processed before an assert loser's state would expire and
+   duplicate IP multicast packets could occur.
 
    An example mechanism to allow packing of AT expiry-triggered assert
    records on assert winners is to round the AT to an appropriate
@@ -490,21 +499,19 @@ Internet-Draft               assert-packing                   March 2023
    minimize their loss, especially when duplicate IP multicast packets
    could cause congestion and loss.
 
-   Routers MAY support a configurable option for sending PackedAssert
-   messages twice in short order (such as 50 msec apart), to overcome
-   possible loss, but only when the following two conditions are met.
-
-   1.  The total size of the two PackedAsserts is less than the total
-       size of equivalent Assert messages,
-
-
-
 
 
 Liu, et al.             Expires 25 September 2023               [Page 9]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+   Routers MAY support a configurable option for sending PackedAssert
+   messages twice in short order (such as 50 msec apart), to overcome
+   possible loss, but only when the following two conditions are met.
+
+   1.  The total size of the two PackedAsserts is less than the total
+       size of equivalent Assert messages,
 
    2.  The condition of the assert records flows in the PackedAssert is
        such that the router can expect that their reception by PIM
@@ -547,13 +554,6 @@ Internet-Draft               assert-packing                   March 2023
 
 4.1.  PIM Assert Packing Hello Option
 
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |      OptionType = TBD         |      OptionLength = 0         |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-                 Figure 1: PIM Assert Packing Hello Option
 
 
 
@@ -561,6 +561,14 @@ Liu, et al.             Expires 25 September 2023              [Page 10]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |      OptionType = TBD         |      OptionLength = 0         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                 Figure 1: PIM Assert Packing Hello Option
 
    The PIM Assert Packing Hello Option is a new option for PIM Hello
    Messages according to Section 4.9.2 of [RFC7761].
@@ -600,14 +608,6 @@ Internet-Draft               assert-packing                   March 2023
    required to be set to 0.
 
 4.3.  Simple PackedAssert Message Format
-
-
-
-
-
-
-
-
 
 
 
@@ -677,6 +677,11 @@ Internet-Draft               assert-packing                   March 2023
    *  M: The number of Assert Records in the message.  Derived from the
       length of the packet carrying the message.
 
+   *  Assert Record: formatted according to {FIG-MESSAGE-SIMPLE}}, wich
+      is the same as the PIM assert message body as specified in
+      Section 4.9.6 of [RFC7761].  The number M of Assert Records is
+      determined from the packet size.
+
    The format of each Assert Record is the same as the PIM assert
    message body as specified in Section 4.9.6 of [RFC7761].
 
@@ -695,11 +700,6 @@ Internet-Draft               assert-packing                   March 2023
                           Figure 4: Assert Record
 
 4.4.  Aggregated PackedAssert Message Format
-
-
-
-
-
 
 
 
@@ -786,8 +786,9 @@ Liu, et al.             Expires 25 September 2023              [Page 14]
 Internet-Draft               assert-packing                   March 2023
 
 
-   *  M: The number of Aggregated Assert Records in the message.
-      Derived from the length of the packet carrying the message.
+   *  Aggregated Assert Record: formatted according to Figure 5.  The
+      number M of Aggregated Assert Records is determined from the
+      packet size.
 
 4.4.1.  Source Aggregated Assert Record
 
@@ -833,7 +834,6 @@ Internet-Draft               assert-packing                   March 2023
 
       The number of Group Address fields.
 
-   *  Group Address:
 
 
 
@@ -841,6 +841,8 @@ Liu, et al.             Expires 25 September 2023              [Page 15]
 
 Internet-Draft               assert-packing                   March 2023
 
+
+   *  Group Address:
 
       As specified in Section 4.9.6 of [RFC7761].
 
@@ -891,8 +893,6 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-
-
 Liu, et al.             Expires 25 September 2023              [Page 16]
 
 Internet-Draft               assert-packing                   March 2023
@@ -910,7 +910,7 @@ Internet-Draft               assert-packing                   March 2023
 
    *  Reserved: Set to zero on transmission.  Ignored upon receipt.
 
-   *  Number of Group Records:
+   *  Number of Group Records (K):
 
       The number of packed Group Records.  A record consists of a Group
       Address and a Source Address list with a number of sources.
@@ -942,7 +942,7 @@ Internet-Draft               assert-packing                   March 2023
 
    *  Reserved: Set to zero on transmission.  Ignored upon receipt.
 
-   *  Number of Sources:
+   *  Number of Sources (P):
 
 
 
@@ -1032,7 +1032,10 @@ Internet-Draft               assert-packing                   March 2023
    constructive RTG AD review, Ines Robles for her Gen-ART review, Tommy
    Pauly for his transport area review, Robert Sparks for his SecDir
    review, Shuping Peng for her RtgDir review, John Scudder for his RTG
-   AD review, Eric Vyncke for his INT AD review.
+   AD review, Eric Vyncke for his INT AD review, Eric Kline for his INT
+   AD review, Paul Wouter for his SEC AD review, Zaheduzzaman Sarker for
+   his TSV AD review, Robert Wilton for his OPS AD review and Martin
+   Duke for his TSV AD review.
 
 8.  Working Group considerations
 
@@ -1047,15 +1050,12 @@ Internet-Draft               assert-packing                   March 2023
 
 8.2.1.  draft-ietf-pim-assert-packing-11
 
-   Thorough AD review by John Scudder.
+   Comprehensive 2 round AD review by John Scudder.
 
-   Functional enhancement: add requirement for existing implementation
-   to be able to disable assert packing so that any possible
-   compatibility issues introduced (which we think will not happen) can
-   be avoided when upgrading to a packedassert version of the software.
-   Also to allow performance comparison.  No making a requirement for
-   day 0 implementations because they may want to save the work of
-   having a non-packed-assert code path.
+
+
+
+
 
 
 
@@ -1066,11 +1066,38 @@ Liu, et al.             Expires 25 September 2023              [Page 19]
 Internet-Draft               assert-packing                   March 2023
 
 
+   Functional enhancement: add requirement for existing implementation
+   to be able to disable assert packing so that any possible
+   compatibility issues introduced (which we think will not happen) can
+   be avoided when upgrading to a packedassert version of the software.
+   Also to allow performance comparison.  No making a requirement for
+   day 0 implementations because they may want to save the work of
+   having a non-packed-assert code path.
+
    Some rewrite to increase readibility, subdivided 3.3.1 into multiple
    subsections to better structure it.
 
-   Second round: some additional refinements to limit scope of
-   prioriziation of messages, added security considerations.
+   3.3.1 improved core requirements - added requirement for counters to
+   show assert/packedassert operations, documentation (e.g.: YANG) for
+   what/how it can send, config option to disable packedasserts.
+   Refined text: Bulletized cases of asserts in rfc7761,
+
+   Subdivided 3.3.1 into multiple subsections for readability improved
+   text based on review.  Added reference for DSCP.
+
+   3.3.1.5 Added explicit example of improvement because of packet size/
+   throughput limits of router.
+
+   Added notion of attacks by wrong hellos to security section.
+
+   Eric Vyncke review:
+
+   Appendix A: Better elaboration of L2 ring vs L3 ring benefits.  Nits.
+
+   Paul Wouter review:
+
+   Changed explanation of number "M" of records to be inline with
+   formatting of other data (sections 4.3 and 4.4).
 
    Some nits.
 
@@ -1086,6 +1113,14 @@ Internet-Draft               assert-packing                   March 2023
 
    For details of review discussion/replies, see review reply emails in
    (https://github.com/toerless/pim-assert-packing/tree/main/emails)j
+
+
+
+
+Liu, et al.             Expires 25 September 2023              [Page 20]
+
+Internet-Draft               assert-packing                   March 2023
+
 
    review Alvaro Retana: Reintroduced ref to PIM-DM, fixed typos,
    downgraded MAY->may for "sufficient".
@@ -1114,14 +1149,6 @@ Internet-Draft               assert-packing                   March 2023
 
    Review Tommy Paul:
 
-
-
-
-Liu, et al.             Expires 25 September 2023              [Page 20]
-
-Internet-Draft               assert-packing                   March 2023
-
-
    Transport related concern explained in reply, but no additional
    explanations in text because the question referred to basic PIM
    behavior expected to be understood by readers: No discovery of loss/
@@ -1138,6 +1165,18 @@ Internet-Draft               assert-packing                   March 2023
 
    https://raw.githubusercontent.com/toerless/pim-assert-packing/main/
    emails/07-alvaro-review-reply.txt
+
+
+
+
+
+
+
+
+Liu, et al.             Expires 25 September 2023              [Page 21]
+
+Internet-Draft               assert-packing                   March 2023
+
 
 8.2.5.  draft-ietf-pim-assert-packing-07
 
@@ -1165,19 +1204,6 @@ Internet-Draft               assert-packing                   March 2023
 
 9.1.  Normative References
 
-
-
-
-
-
-
-
-
-Liu, et al.             Expires 25 September 2023              [Page 21]
-
-Internet-Draft               assert-packing                   March 2023
-
-
    [I-D.ietf-pim-rfc8736bis]
               Venaas, S. and A. Retana, "PIM Message Type Space
               Extension and Reserved Bits", Work in Progress, Internet-
@@ -1199,6 +1225,14 @@ Internet-Draft               assert-packing                   March 2023
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+
+
+
+
+Liu, et al.             Expires 25 September 2023              [Page 22]
+
+Internet-Draft               assert-packing                   March 2023
+
 
 9.2.  Informative References
 
@@ -1227,13 +1261,6 @@ Internet-Draft               assert-packing                   March 2023
               RFC 7490, DOI 10.17487/RFC7490, April 2015,
               <https://www.rfc-editor.org/info/rfc7490>.
 
-
-
-Liu, et al.             Expires 25 September 2023              [Page 22]
-
-Internet-Draft               assert-packing                   March 2023
-
-
 Appendix A.  Use case examples
 
    The PIM Assert mechanism can only be avoided by designing the network
@@ -1255,6 +1282,14 @@ Appendix A.  Use case examples
    The mere fact that by operating at the IP layer, different solutions
    for IP unicast and multicast are required makes them more difficult
    to operate, they typically require more expensive hardware and
+
+
+
+Liu, et al.             Expires 25 September 2023              [Page 23]
+
+Internet-Draft               assert-packing                   March 2023
+
+
    therefore most often, they are not even available on the target
    equipment, such as [RFC7490] with IP repair tunnels for IP unicast or
    [RFC7431] for IP multicast.
@@ -1283,13 +1318,6 @@ A.2.  Video surveillance
    to many groups there may be issues with many asserts on first-hop
    routers.
 
-
-
-Liu, et al.             Expires 25 September 2023              [Page 23]
-
-Internet-Draft               assert-packing                   March 2023
-
-
 A.3.  Financial Services
 
    Financial services extensively rely on IP Multicast to deliver stock
@@ -1309,6 +1337,14 @@ A.4.  IPTV broadcast Video
    is still forwarding traffic.  In the situation multicast traffic
    duplication maybe happen in the shared access network and can trigger
    the assert progress.
+
+
+
+
+Liu, et al.             Expires 25 September 2023              [Page 24]
+
+Internet-Draft               assert-packing                   March 2023
+
 
 A.5.  MVPN MDT
 
@@ -1340,12 +1376,6 @@ Authors' Addresses
    Email: tte@cs.fau.de
 
 
-
-Liu, et al.             Expires 25 September 2023              [Page 24]
-
-Internet-Draft               assert-packing                   March 2023
-
-
    Mike McBride
    Futurewei
    United States of America
@@ -1356,36 +1386,6 @@ Internet-Draft               assert-packing                   March 2023
    ZTE Corporation
    China
    Email: zhang.zheng@zte.com.cn
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

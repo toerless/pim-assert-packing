@@ -10,7 +10,12 @@ wg: PIM
 ipr: trust200902
 
 stand_alone: yes
-pi: [ toc, tocdepth: 5, sortrefs, symrefs, comments]
+pi: 
+  toc: yes
+  tocdepth: 5
+  sortrefs: yes
+  symrefs: yes
+  comments: yes
 
 author:
   -
@@ -52,7 +57,7 @@ informative:
 
 --- abstract
 
-In PIM-SM shared LANs networks, there is often more than one upstream router.
+In PIM-SM shared LAN networks, there is often more than one upstream router.
 When PIM Sparse Mode (PIM-SM), including PIM Source Specific-Specific Multicast (PIM-SSM), is used, this
 can lead to duplicate IP multicast packets being forwarded by these
 PIM routers.  PIM Assert messages are used to elect a single forwarder for
@@ -466,6 +471,10 @@ flags in a (non-packed) PIM Assert message are required to be set to 0.
 
 - M: The number of Assert Records in the message. Derived from the length of the packet carrying the message.
 
+- Assert Record: formatted according to {FIG-MESSAGE-SIMPLE}}, wich is the same
+  as the PIM assert message body as specified in Section 4.9.6 of {{RFC7761}}.
+  The number M of Assert Records is determined from the packet size.
+
 The format of each Assert Record is the same as the PIM assert message body as specified in Section 4.9.6 of {{RFC7761}}.
 
      0                   1                   2                   3
@@ -527,7 +536,8 @@ The format of each Assert Record is the same as the PIM assert message body as s
 - Zero:
      Set to zero on transmission. Serves to make non assert packing capable PIM routers fail in parsing the message instead of possible mis-parsing if this field was used.
 
-- M: The number of Aggregated Assert Records in the message. Derived from the length of the packet carrying the message.
+- Aggregated Assert Record: formatted according to {{FIG-PACKET-FORMAT-SG}}.
+  The number M of Aggregated Assert Records is determined from the packet size.
 
 ### Source Aggregated Assert Record {#s-assert-record}
 
@@ -628,7 +638,7 @@ encoded as it is also not present in {{RFC7761}} assert records.
 - Reserved:
     Set to zero on transmission.  Ignored upon receipt.
 
-- Number of Group Records:
+- Number of Group Records (K):
 
     The number of packed Group Records. A record consists of a Group
     Address and a Source Address list with a number of sources.
@@ -660,7 +670,7 @@ The format of each Group Record is:
 - Reserved:
      Set to zero on transmission.  Ignored upon receipt.
 
-- Number of Sources:
+- Number of Sources (P):
 
     The Number of Sources is corresponding to the number of Source Address fields in the Group Record.
     If this number is 0, the Group Record indicates one assert record with a Source Address of 0.
@@ -715,7 +725,6 @@ router emitting forged PIM Hello messages can inhibit operations of this extensi
 Authentication of PIM messages such as explained in {{RFC7761}}, Sections 6.2 and 6.3 can
 protect against the forged message attacks attacks.
 
-
 # Acknowledgments
 
 The authors would like to thank: Stig Venaas for the valuable
@@ -723,7 +732,10 @@ contributions of this document, Alvaro Retana for his thorough
 and constructive RTG AD review, Ines Robles for her Gen-ART review,
 Tommy Pauly for his transport area review, Robert Sparks for his
 SecDir review, Shuping Peng for her RtgDir review, John Scudder
-for his RTG AD review, Eric Vyncke for his INT AD review.
+for his RTG AD review, Eric Vyncke for his INT AD review,
+Eric Kline for his INT AD review, Paul Wouter for his SEC AD review,
+Zaheduzzaman Sarker for his TSV AD review, Robert Wilton for his
+OPS AD review and Martin Duke for his TSV AD review.
 
 # Working Group considerations
 
@@ -737,13 +749,27 @@ This document is hosted starting with -06 on https://github.com/toerless/pim-ass
 
 ### draft-ietf-pim-assert-packing-11
 
-Thorough AD review by John Scudder.
+Comprehensive 2 round AD review by John Scudder.
 
 Functional enhancement: add requirement for existing implementation to be able to disable assert packing so that any possible compatibility issues introduced (which we think will not happen) can be avoided when upgrading to a packedassert version of the software. Also to allow performance comparison. No making a requirement for day 0 implementations because they may want to save the work of having a non-packed-assert code path.
 
 Some rewrite to increase readibility, subdivided 3.3.1 into multiple subsections to better structure it.
 
-Second round: some additional refinements to limit scope of prioriziation of messages, added security considerations.
+3.3.1 improved core requirements - added requirement for counters to show assert/packedassert operations, documentation (e.g.: YANG) for what/how it can send, config option to disable packedasserts. Refined text: Bulletized cases of asserts in rfc7761, 
+
+Subdivided 3.3.1 into multiple subsections for readability improved text based on review. Added reference for DSCP.
+
+3.3.1.5 Added explicit example of improvement because of packet size/throughput limits of router.
+
+Added notion of attacks by wrong hellos to security section.
+
+Eric Vyncke review:
+
+Appendix A: Better elaboration of L2 ring vs L3 ring benefits. Nits.
+
+Paul Wouter review:
+
+Changed explanation of number "M" of records to be inline with formatting of other data (sections 4.3 and 4.4).
 
 Some nits.
 
