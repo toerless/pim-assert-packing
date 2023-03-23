@@ -47,10 +47,12 @@ informative:
   RFC2475:
   RFC3973:
   RFC6037:
+  RFC7431:
+  RFC7490:
 
 --- abstract
 
-LANs often have more than one upstream router.
+In PIM-SM shared LANs networks, there is often more than one upstream router.
 When PIM Sparse Mode (PIM-SM), including PIM Source Specific-Specific Multicast (PIM-SSM), is used, this
 can lead to duplicate IP multicast packets being forwarded by these
 PIM routers.  PIM Assert messages are used to elect a single forwarder for
@@ -138,8 +140,8 @@ changes are undesirable though, when they are only done to enable IP multicast
 with PIM because they increase the cost of introducing IP multicast with PIM.
 
 These designs are also not feasible when specific L2 technologies are needed.
-For example various L2 technologies for rings provide sub 50msec failover
-mechanisms, something not possible equally with an L3 subnet based ring. 
+For example various L2 technologies for rings provide sub 50 msec failover
+mechanisms, something not possible equally with an L5 subnet based ring. 
 Likewise, IEEE Time Sensitive Networking mechanisms would require an
 L2 topology that can not simply be replaced by an L3 topology.
 L2 sub-topologies can also significantly reduce the cost of deployment.
@@ -298,7 +300,7 @@ creates a 3 second window in which such assert records can be sent, received, an
 an assert loser's state would expire and duplicate IP multicast packets could occur.
 
 An example mechanism to allow packing of AT expiry-triggered assert records on assert winners is
-to round the AT to an appropriate granularity such as 100msec.  This will cause AT for multiple
+to round the AT to an appropriate granularity such as 100 msec.  This will cause AT for multiple
 (S,G) and/or (\*,G) states to expire at the same time, thus allowing them to be easily packed
 without changes to the assert state machinery.
 
@@ -328,7 +330,7 @@ be sent with an appropriate Differentiated Services Code Point (DSCP, {{RFC2475}
 when duplicate IP multicast packets could cause congestion and loss.
 
 Routers MAY support a configurable option for sending PackedAssert messages twice in short order
-(such as 50msec apart), to overcome possible loss, but only when the following two conditions
+(such as 50 msec apart), to overcome possible loss, but only when the following two conditions
 are met.
 
 1. The total size of the two PackedAsserts is less than the total size of equivalent Assert messages,
@@ -405,10 +407,12 @@ receive and process all the PackedAssert encodings defined in this document.
 {: #FIG-MESSAGE-ASSERT title="Assert Message Format"}
 
 {{FIG-MESSAGE-ASSERT}} shows a PIM Assert message as specified in Section 4.9.6 of
-{{RFC7761}} with the common header showing the "7 6 5 4 3 2" Flag Bits as defined
+{{RFC7761}}. The Encoded-Group and Encoded-Unicast address formats are specified in Section 4.9.1 of
+{{RFC7761} for IP and IPv6.
+
+This common header is showing the "7 6 5 4 3 2" Flag Bits as defined
 in Section 4 of {{I-D.ietf-pim-rfc8736bis}} and the location of the P and A flags,
-see {{IANA}}.
- As specified in {{assert-packing-formats}}, both
+as described in {{IANA}}.   As specified in {{assert-packing-formats}}, both
 flags in a (non-packed) PIM Assert message are required to be set to 0.
 
 ## Simple PackedAssert Message Format {#simple-packedassert-message}
@@ -719,7 +723,7 @@ contributions of this document, Alvaro Retana for his thorough
 and constructive RTG AD review, Ines Robles for her Gen-ART review,
 Tommy Pauly for his transport area review, Robert Sparks for his
 SecDir review, Shuping Peng for her RtgDir review, John Scudder
-for his RTG AD review.
+for his RTG AD review, Eric Vyncke for his INT AD review.
 
 # Working Group considerations
 
@@ -818,9 +822,19 @@ of point-to-point subnets connected by the routers. These L2/L3 topology
 changes are undesirable though, when they are only done to enable IP multicast
 with PIM because they increase the cost of introducing IP multicast with PIM.
 
-These designs are also not feasible when specific L2 technologies are needed.
-For example various L2 technologies for rings provide sub 50msec failover
-mechanisms, something not possible equally with an L3 subnet based ring. 
+These L3 ring designs are specifically undesirable, when particular L2 technologies are needed.
+For example various L2 technologies for rings provide sub 50 msec failover
+mechanisms that will benefit IP unicast and multicast alike without any
+added complexity to the IP layer (forwarding or routing). If such L2 rings where to be replaced
+by L3 rings just to avoid PIM asserts, then this would result in the need for
+a complex choice of of a sub 50 msec IP unicast failover solutions as well
+as a sub 50 msec IP multicast failover solution. The mere fact that by
+operating at the IP layer, different solutions for IP unicast and multicast
+are required makes them more difficult to operate, they typically require more
+expensive hardware and therefore most often, they are not even available 
+on the target equipment, such as {{RFC7490}} with IP repair tunnels for IP unicast or
+{{RFC7431}} for IP multicast.
+
 Likewise, IEEE Time Sensitive Networking mechanisms would require an
 L2 topology that can not simply be replaced by an L3 topology.
 L2 sub-topologies can also significantly reduce the cost of deployment.

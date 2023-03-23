@@ -5,11 +5,11 @@
 PIM                                                          Y. Liu, Ed.
 Internet-Draft                                              China Mobile
 Intended status: Standards Track                          T. Eckert, Ed.
-Expires: 24 September 2023                                    M. McBride
+Expires: 25 September 2023                                    M. McBride
                                                                Futurewei
                                                                 Z. Zhang
                                                          ZTE Corporation
-                                                           23 March 2023
+                                                           24 March 2023
 
 
                        PIM Assert Message Packing
@@ -17,12 +17,12 @@ Expires: 24 September 2023                                    M. McBride
 
 Abstract
 
-   LANs often have more than one upstream router.  When PIM Sparse Mode
-   (PIM-SM), including PIM Source Specific-Specific Multicast (PIM-SSM),
-   is used, this can lead to duplicate IP multicast packets being
-   forwarded by these PIM routers.  PIM Assert messages are used to
-   elect a single forwarder for each IP multicast traffic flow between
-   these routers.
+   In PIM-SM shared LANs networks, there is often more than one upstream
+   router.  When PIM Sparse Mode (PIM-SM), including PIM Source
+   Specific-Specific Multicast (PIM-SSM), is used, this can lead to
+   duplicate IP multicast packets being forwarded by these PIM routers.
+   PIM Assert messages are used to elect a single forwarder for each IP
+   multicast traffic flow between these routers.
 
    This document defines a mechanism to send and receive information for
    multiple IP multicast flows in a single PackedAssert message.  This
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2023.
+   This Internet-Draft will expire on 25 September 2023.
 
 
 
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 1]
+Liu, et al.             Expires 25 September 2023               [Page 1]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -109,16 +109,16 @@ Table of Contents
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 2]
+Liu, et al.             Expires 25 September 2023               [Page 2]
 
 Internet-Draft               assert-packing                   March 2023
 
 
-   Appendix A.  Use case examples  . . . . . . . . . . . . . . . . .  22
+   Appendix A.  Use case examples  . . . . . . . . . . . . . . . . .  23
      A.1.  Enterprise network  . . . . . . . . . . . . . . . . . . .  23
      A.2.  Video surveillance  . . . . . . . . . . . . . . . . . . .  23
-     A.3.  Financial Services  . . . . . . . . . . . . . . . . . . .  23
-     A.4.  IPTV broadcast Video  . . . . . . . . . . . . . . . . . .  23
+     A.3.  Financial Services  . . . . . . . . . . . . . . . . . . .  24
+     A.4.  IPTV broadcast Video  . . . . . . . . . . . . . . . . . .  24
      A.5.  MVPN MDT  . . . . . . . . . . . . . . . . . . . . . . . .  24
      A.6.  Special L2 services . . . . . . . . . . . . . . . . . . .  24
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  24
@@ -165,7 +165,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 3]
+Liu, et al.             Expires 25 September 2023               [Page 3]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -206,8 +206,8 @@ Internet-Draft               assert-packing                   March 2023
    of introducing IP multicast with PIM.
 
    These designs are also not feasible when specific L2 technologies are
-   needed.  For example various L2 technologies for rings provide sub
-   50msec failover mechanisms, something not possible equally with an L3
+   needed.  For example various L2 technologies for rings provide sub 50
+   msec failover mechanisms, something not possible equally with an L5
    subnet based ring.  Likewise, IEEE Time Sensitive Networking
    mechanisms would require an L2 topology that can not simply be
    replaced by an L3 topology.  L2 sub-topologies can also significantly
@@ -221,7 +221,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 4]
+Liu, et al.             Expires 25 September 2023               [Page 4]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -277,7 +277,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 5]
+Liu, et al.             Expires 25 September 2023               [Page 5]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -333,7 +333,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 6]
+Liu, et al.             Expires 25 September 2023               [Page 6]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -389,7 +389,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 7]
+Liu, et al.             Expires 25 September 2023               [Page 7]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -445,14 +445,14 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 8]
+Liu, et al.             Expires 25 September 2023               [Page 8]
 
 Internet-Draft               assert-packing                   March 2023
 
 
    An example mechanism to allow packing of AT expiry-triggered assert
    records on assert winners is to round the AT to an appropriate
-   granularity such as 100msec.  This will cause AT for multiple (S,G)
+   granularity such as 100 msec.  This will cause AT for multiple (S,G)
    and/or (*,G) states to expire at the same time, thus allowing them to
    be easily packed without changes to the assert state machinery.
 
@@ -491,7 +491,7 @@ Internet-Draft               assert-packing                   March 2023
    could cause congestion and loss.
 
    Routers MAY support a configurable option for sending PackedAssert
-   messages twice in short order (such as 50msec apart), to overcome
+   messages twice in short order (such as 50 msec apart), to overcome
    possible loss, but only when the following two conditions are met.
 
    1.  The total size of the two PackedAsserts is less than the total
@@ -501,7 +501,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023               [Page 9]
+Liu, et al.             Expires 25 September 2023               [Page 9]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -557,7 +557,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 10]
+Liu, et al.             Expires 25 September 2023              [Page 10]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -590,11 +590,14 @@ Internet-Draft               assert-packing                   March 2023
                       Figure 2: Assert Message Format
 
    Figure 2 shows a PIM Assert message as specified in Section 4.9.6 of
-   [RFC7761] with the common header showing the "7 6 5 4 3 2" Flag Bits
-   as defined in Section 4 of [I-D.ietf-pim-rfc8736bis] and the location
-   of the P and A flags, see Section 5.  As specified in Section 3.2,
-   both flags in a (non-packed) PIM Assert message are required to be
-   set to 0.
+   [RFC7761].  The Encoded-Group and Encoded-Unicast address formats are
+   specified in Section 4.9.1 of [RFC7761] for IP and IPv6.
+
+   This common header is showing the "7 6 5 4 3 2" Flag Bits as defined
+   in Section 4 of [I-D.ietf-pim-rfc8736bis] and the location of the P
+   and A flags, as described in Section 5.   As specified in
+   Section 3.2, both flags in a (non-packed) PIM Assert message are
+   required to be set to 0.
 
 4.3.  Simple PackedAssert Message Format
 
@@ -610,10 +613,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-
-
-
-Liu, et al.             Expires 24 September 2023              [Page 11]
+Liu, et al.             Expires 25 September 2023              [Page 11]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -669,7 +669,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 12]
+Liu, et al.             Expires 25 September 2023              [Page 12]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -725,7 +725,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 13]
+Liu, et al.             Expires 25 September 2023              [Page 13]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -781,7 +781,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 14]
+Liu, et al.             Expires 25 September 2023              [Page 14]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -837,7 +837,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 15]
+Liu, et al.             Expires 25 September 2023              [Page 15]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -893,7 +893,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 16]
+Liu, et al.             Expires 25 September 2023              [Page 16]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -949,7 +949,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 17]
+Liu, et al.             Expires 25 September 2023              [Page 17]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -1005,7 +1005,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 18]
+Liu, et al.             Expires 25 September 2023              [Page 18]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -1032,7 +1032,7 @@ Internet-Draft               assert-packing                   March 2023
    constructive RTG AD review, Ines Robles for her Gen-ART review, Tommy
    Pauly for his transport area review, Robert Sparks for his SecDir
    review, Shuping Peng for her RtgDir review, John Scudder for his RTG
-   AD review.
+   AD review, Eric Vyncke for his INT AD review.
 
 8.  Working Group considerations
 
@@ -1061,7 +1061,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 19]
+Liu, et al.             Expires 25 September 2023              [Page 19]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -1117,7 +1117,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 20]
+Liu, et al.             Expires 25 September 2023              [Page 20]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -1173,7 +1173,7 @@ Internet-Draft               assert-packing                   March 2023
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 21]
+Liu, et al.             Expires 25 September 2023              [Page 21]
 
 Internet-Draft               assert-packing                   March 2023
 
@@ -1217,6 +1217,23 @@ Internet-Draft               assert-packing                   March 2023
               RFC 6037, DOI 10.17487/RFC6037, October 2010,
               <https://www.rfc-editor.org/info/rfc6037>.
 
+   [RFC7431]  Karan, A., Filsfils, C., Wijnands, IJ., Ed., and B.
+              Decraene, "Multicast-Only Fast Reroute", RFC 7431,
+              DOI 10.17487/RFC7431, August 2015,
+              <https://www.rfc-editor.org/info/rfc7431>.
+
+   [RFC7490]  Bryant, S., Filsfils, C., Previdi, S., Shand, M., and N.
+              So, "Remote Loop-Free Alternate (LFA) Fast Reroute (FRR)",
+              RFC 7490, DOI 10.17487/RFC7490, April 2015,
+              <https://www.rfc-editor.org/info/rfc7490>.
+
+
+
+Liu, et al.             Expires 25 September 2023              [Page 22]
+
+Internet-Draft               assert-packing                   March 2023
+
+
 Appendix A.  Use case examples
 
    The PIM Assert mechanism can only be avoided by designing the network
@@ -1227,20 +1244,24 @@ Appendix A.  Use case examples
    done to enable IP multicast with PIM because they increase the cost
    of introducing IP multicast with PIM.
 
+   These L3 ring designs are specifically undesirable, when particular
+   L2 technologies are needed.  For example various L2 technologies for
+   rings provide sub 50 msec failover mechanisms that will benefit IP
+   unicast and multicast alike without any added complexity to the IP
+   layer (forwarding or routing).  If such L2 rings where to be replaced
+   by L3 rings just to avoid PIM asserts, then this would result in the
+   need for a complex choice of of a sub 50 msec IP unicast failover
+   solutions as well as a sub 50 msec IP multicast failover solution.
+   The mere fact that by operating at the IP layer, different solutions
+   for IP unicast and multicast are required makes them more difficult
+   to operate, they typically require more expensive hardware and
+   therefore most often, they are not even available on the target
+   equipment, such as [RFC7490] with IP repair tunnels for IP unicast or
+   [RFC7431] for IP multicast.
 
-
-Liu, et al.             Expires 24 September 2023              [Page 22]
-
-Internet-Draft               assert-packing                   March 2023
-
-
-   These designs are also not feasible when specific L2 technologies are
-   needed.  For example various L2 technologies for rings provide sub
-   50msec failover mechanisms, something not possible equally with an L3
-   subnet based ring.  Likewise, IEEE Time Sensitive Networking
-   mechanisms would require an L2 topology that can not simply be
-   replaced by an L3 topology.  L2 sub-topologies can also significantly
-   reduce the cost of deployment.
+   Likewise, IEEE Time Sensitive Networking mechanisms would require an
+   L2 topology that can not simply be replaced by an L3 topology.  L2
+   sub-topologies can also significantly reduce the cost of deployment.
 
    The following subsections give examples of the type of network and
    use-cases in which subnets with asserts have been observerd or are
@@ -1262,6 +1283,13 @@ A.2.  Video surveillance
    to many groups there may be issues with many asserts on first-hop
    routers.
 
+
+
+Liu, et al.             Expires 25 September 2023              [Page 23]
+
+Internet-Draft               assert-packing                   March 2023
+
+
 A.3.  Financial Services
 
    Financial services extensively rely on IP Multicast to deliver stock
@@ -1281,14 +1309,6 @@ A.4.  IPTV broadcast Video
    is still forwarding traffic.  In the situation multicast traffic
    duplication maybe happen in the shared access network and can trigger
    the assert progress.
-
-
-
-
-Liu, et al.             Expires 24 September 2023              [Page 23]
-
-Internet-Draft               assert-packing                   March 2023
-
 
 A.5.  MVPN MDT
 
@@ -1320,6 +1340,12 @@ Authors' Addresses
    Email: tte@cs.fau.de
 
 
+
+Liu, et al.             Expires 25 September 2023              [Page 24]
+
+Internet-Draft               assert-packing                   March 2023
+
+
    Mike McBride
    Futurewei
    United States of America
@@ -1341,4 +1367,34 @@ Authors' Addresses
 
 
 
-Liu, et al.             Expires 24 September 2023              [Page 24]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Liu, et al.             Expires 25 September 2023              [Page 25]
