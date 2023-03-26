@@ -11,6 +11,15 @@ In-Reply-To: <167890306914.3144.14020186278968744116@ietfa.amsl.com>
 
 Thanks, Martin.
 
+I just uploaded -11 which has resolved John Scudders DISCUSS and intends to answer
+all open COMMENTS including yours.
+
+Diff here:
+
+https://author-tools.ietf.org/iddiff?url1=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-10.txt&url2=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-11.txt&difftype=--html
+
+Wrt. your feedback:
+
 That last paragraph of 3.3.1 was rewriten with one paragraph from 
 John Scutter and one example in a second paragraph at the end from me. This
 is now section 3.3.1. It has less of an instructive (may, should) character
@@ -18,6 +27,7 @@ and more of a descriptive character, because ultimately, we have a very
 simply described, but complex to achieve goal (minimize number of duplicate data packet),
 and when trying to achieve this through larger and larger assertsignalling  packets,
 the impact of several implementation and user traffic dependending impacts start to overlap.
+
 
 Cheers
     Toerless

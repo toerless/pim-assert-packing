@@ -9,6 +9,10 @@ Subject: Re: John Scudder's No Objection on draft-ietf-pim-assert-packing-10:
 Reply-To: 
 In-Reply-To: <167934710407.14208.12413404562308830318@ietfa.amsl.com>
 
+[resending, as the first mail send didn't have my replies]
+
+reply to ballot position/details. Inline.
+
 On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 > John Scudder has entered the following ballot position for
 > draft-ietf-pim-assert-packing-10: No Objection
@@ -49,7 +53,9 @@ On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 >    free to choose which PackedAssert message format they send.
 > 
 > Do you mean "free to choose which Assert message format they send"?
-> 
+
+Yes. Fixed in text.
+
 > ### Section 3.3.1
 > 
 >    *  Implementations SHOULD be able to indicate to the operator (such
@@ -58,6 +64,8 @@ On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 >       received.
 > 
 > Nit: where -> were
+
+Fixed.
 > 
 > ### Section 3.3.1
 > 
@@ -72,7 +80,9 @@ On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 >       operations. An exception exists for implementations that do not
 >       have any native support for legacy Assert operations, these
 >       implementations MAY omit the configuration option.
-> 
+
+Thanks. Please check updated text.
+
 > ### Section 3.3.1.1
 > 
 > I'm still having difficulty following this section, sorry.
@@ -108,7 +118,9 @@ On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 > interface, but your use of phrases like "the router... serializes" makes it
 > smell a little like you think this tuning is going to be applied all the way
 > down to writing the packet to the wire.
-> 
+
+Checked to "schedules". Yes, serializes was wrong.
+
 >    If there are one or more reception triggered Assert/PackedAssert
 >    messages already serializing and/or scheduled to be serialized on the
 >    outgoing interface,
@@ -137,20 +149,74 @@ On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 > "reception-triggered asserts should be prioritized above other asserts; when
 > constructing messages to send, please pack the buffers as full as can be done
 > without inducing unnecessary latency"?
-> 
+
+There is a lot of ongoing work in other areas which i think does inverst a lot more
+into processing optimized for low-latency than those classical routing protocol
+control plane queues. Reminds me a bit of how as little as maybe 12 years or so,
+even the TCP implementations for BGP happened to be potentially much worse than
+other general purpose TCP implementations in some products. 
+
+For example, AQM in hardware chips with algorithms like PIE (RFC8033) does take into
+account time spent in queue to some degree, and CoDEL even more so. 
+
+If you are stuck with a legacy queuing system for protocol queues, you could implement IMHO
+simple workarounds based on simple protocol process level policers:
+
+- Create a table of per-physcical  outgoing-interface simple "policers",
+  tracking the number of bytes from high priority packets that we track
+  as yet-to-be-serialized. Simply based on lock clock timestamp and
+  tracked physical outgoing interface speed (aka: need to know if that one is
+  100Mbps, Gigabit etc..). Whenever you check the policer at a later
+  point in time, you simply deduct the number of bytes based on interface speed
+  and elapsed clock time.
+
+- Now, whenever your PIM code performs a "send assert" for those time critical
+  asserts. we append the assert record to the appropriate list - interface, (S,G) or (*,G)
+  Then we check if the list is at MTU size, if so, we create a packet and
+  enqueue it, updating the policer.
+
+- If we didn't send so far, we check the policer to see if the number of
+  enqueued bytes on the interface ran below some implementation thrashold, such as an MTU, if so,
+  then we pick whichever of the two lists (S,G), (*,G) has more bytes, pack it,
+  send it, update policer. This step would also result in sending out just
+  simple assert, if we hadn't remembered any more assert records then the one
+  that triggered this processing in the first place.
+
+Aka: we never need to remember more than one MTU worth of (S,G) assert records
+per interface and one MTU worth of (*,G) per interface, but to appropriately 
+time their sending, this most simple implementation would want to have almost
+zero-cost access to some local timestamp (e.g.: from CPU).
+And we need to figure out the outgoing interface speed somehow (100Mbps,
+Gigabit, ...). 
+
+And of course, if cpu/thread clock doesn't work, there are workaround for this too.
+et.c. pp.
+
+And of course somewhere down near the interface level, on linecards or the
+like you hopefully do have at least high/low priority queue for protocol
+packets. E.g.: PIM Hellos always belonged into the high priority queue in case you
+had a few megabytes worth of PIM join/prunes.
+
 > Also, nit: I would use a hyphen in "reception-triggered" since the two words
 > are being used together as an adjective. Similarly in 3.3.1.2, "timer
 > expiry-triggered".
+
+Fixed.
+
 > 
 > ### Section 3.3.1.3
 > 
 > Nit, subsectons -> subsections
 > Nit, be achieve -> be achieved
-> 
+
+Fixed.
+
 > ### Section 3.3.1.5
 > 
 > Nit, througput -> throughput
-> 
+
+Fixed.
+
 > ### Section 6
 > 
 > I guess it may be so obvious as to not need spelling out, but greenfield
@@ -161,12 +227,35 @@ On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 >    *  When any PIM routers on the LAN have not signaled support for
 >       Assert Packing, implementations MUST send only Asserts and MUST
 >       NOT send PackedAsserts under any condition.
-> 
+
+I was imaginign that brownfield implementations would create a new code path
+for packed asserts so as not to create regression issues for the case when
+packed asserts are not in use (not enabled, or on a LAN with some non-supporting
+router). In a greenfield implementation i would just have one code-path, such
+as the above described one, whether or not assert packing is enabled. I would
+just need to think how to best build it so i have minimum amount of alternative
+code paths whether assert-packing is enabled or not (e.g. setting packetization
+threshold to 0 and only using assert packet format, but no packing).
+
+And remember my code suggestions above was just to tackle the timing issue for the time
+critical asserts. The ones created from timer expiry would still have
+lower priority whether they are sent out as asserts or packed asserts. In that
+respect a greenfield implementation would likely always perform better in the
+priorization between timer expiry and reception triggeed case than a brownfield
+implementation that may carefully keep old code running which may have not made
+this distinction in timing between those two type of asserts.
+
 > I wonder if this (the ability to completely silence such an implementation by
 > advertising non-support for PackedAssert) represents an interesting enough
 > attack that it's worth calling out in the Security Considerations? Perhaps this
 > is already captured in some of the underlying spec SecCons, but I'm not sure.
-> 
+
+I updated the security section accordingly, please check.
+
+Thanks
+
+Toerless
+
 > ## Notes
 > 
 > This review is in the ["IETF Comments" Markdown format][ICMF], You can use the
@@ -175,9 +264,3 @@ On Mon, Mar 20, 2023 at 02:18:24PM -0700, John Scudder via Datatracker wrote:
 > 
 > [ICMF]: https://github.com/mnot/ietf-comments/blob/main/format.md
 > [ICT]: https://github.com/mnot/ietf-comments
-> 
-> 
-
--- 
----
-tte@cs.fau.de

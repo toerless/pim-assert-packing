@@ -19,6 +19,15 @@ Lines: 69
 
 Thanks, Paul
 
+I just uploaded -11 which has resolved John Scudders DISCUSS and intends to answer
+all open COMMENTS including yours.
+
+Diff here:
+
+https://author-tools.ietf.org/iddiff?url1=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-10.txt&url2=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-11.txt&difftype=--html
+
+Wrt. your feedback:
+
 reply Q/answers inline
 
 On Tue, Mar 14, 2023 at 06:43:13PM -0700, Paul Wouters via Datatracker wrote:

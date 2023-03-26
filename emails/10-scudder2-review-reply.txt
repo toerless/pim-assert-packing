@@ -11,6 +11,22 @@ Subject: Re: [pim] John Scudder's Discuss on
 Reply-To: 
 In-Reply-To: <FDAA1AAA-15F2-487B-97AA-370CB45A2C50@juniper.net>
 
+[resending, as the first mail send didn't have my replies]
+
+I just uploaded -11 which should resolve all remaining COMMENT from you and others
+
+Diff here vs. the first commit i did to resolve your DISCUSS:
+
+https://author-tools.ietf.org/iddiff?url1=https://raw.githubusercontent.com/toerless/pim-assert-packing/fc9d64f6c74d2c0a1fc3b7a4fb41715b3f70d825/draft-ietf-pim-assert-packing.txt&url2=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-11.txt&difftype=--html
+
+Full -10 to -11 diff:
+
+https://author-tools.ietf.org/iddiff?url1=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-10.txt&url2=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-11.txt&difftype=--html
+
+Answering in another email re. your ballot reply.
+
+Inline...
+
 On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > Hi Toerless,
 > 
@@ -156,7 +172,15 @@ On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > > send PackedAsserts somehow, at least sometimes - however dumb that may be.
 > 
 > The candidate version 11 text is fine as far as clarity and readability go. I still question whether you actually need to say this; it would seem bizarre for an implementor to go to the trouble of supporting this specification without also making an effort to gain some benefit from it, and for that matter, as you point out the text can be “obeyed” in ways that are still not helpful. But if you think it’s worth leaving in, that’s fine, leave it in, now that it’s clear I’ve no problem with it.
-> 
+
+I wanted to make sure that its normatively precise what has to be done. 
+Of course, the additional statements as to what to do in detail (without hat
+text being normative) is ultimately likely more important/helpful.
+
+This whole "performance optimization" is kinda new to me. I also wouldn't know
+another RFC that tackled the same issues with text any better. If you can
+think about some, let me know.
+
 > > And the prior sentence
 > > demands that implementation need some form of documentation explaining what they do.
 > > So the candidate operator - worst case - has a way to know how to replicate a condition
@@ -186,7 +210,13 @@ On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > > explained in the doc i want to give the most freedom to implementers to explore them!).
 > 
 > You realize you’re tempting me to ask you why the correct track isn't Experimental, don’t you? You’re making a strong case for it.
-> 
+
+The difficulties IMHO are not functional, but implementation wise for brownfield, but not
+greenfield implementatins. If youalready got data-structures in long-lived code, you
+may be a lot more resistant to do drastic changes to make them best fit what would
+make assert packing work best. But i don't think these challenges are what would
+make it experimental.
+
 > > I also reordered the bullet points and added two requirements that will help
 > > users in assessing the performance of PackedAsserts to support the goal of:
 > > 
@@ -228,9 +258,16 @@ On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > > is insufficient to get the best implementation.
 > 
 > Really, I think that if someone wants to write a lousy implementation they will do so regardless of what the RFC tells them to do, and if someone wants to write a good implementation they will do so even if the RFC didn’t tell them they had to. So… whatever. :-) 
-> 
+
+Sure. Hence the requirements that allow operators to validate the behavior.
+But i was primarily worried about well willing implementors that would not necessarily
+understand all the details how assert timing would impact behavior so - helpful
+text for them.
+
 > I do agree that mandating the instrumentation, and the ability to disable the feature, is clear, actionable, and moves you in the direction you want, which is to enable customers to determine which implementations are lousy and which are good and exert pressure accordingly. So, good improvement!
-> 
+
+Thanks.
+
 > > But i rather think that the detailled
 > > explanations that follow in the section are more helpfull to explain what imlementers
 > > actually may find resaonable.
@@ -336,7 +373,13 @@ On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > > i am happy to use it, but i can not think of a better term.
 > 
 > You’ll see in my updated ballot that I think what you’re trying to do is specify priority queueing, only without using the word “queueing” for some reason, which I still don’t understand. :-/ I don’t insist on using the “queueing” language, and I don’t want to get hung up on it… but it sure makes it easier to talk/think about, from my point of view.
-> 
+
+The order in which the assert records may be sent out does not need to be the same
+order in which the are remembered. Think for example of creating two lists of
+assert records to remember for the event-triggered ones: one for (S,G), one for (*,G).
+You would then remove remove records from whatever list has accumulated enough
+data to get to MTU size and/or thats old / too old.
+
 > >> For that matter, it seems to me that the first two sentences could be replaced
 > >> with something more compact since presumably the implementor already has to
 > >> know when they're sending an Assert and doesn't need the full enumeration? Then
@@ -380,7 +423,9 @@ On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > > MAY result not in sending of an Assert message with the assert record,
 > 
 > That clause tripped me up when I reviewed it, because the way it’s structured makes it feel like the MAY is used to express expectation, i.e. like it could be replaced with “might”. But I agree that when carefully read, it means what you need it to mean. If I had an easy fix I’d propose one. “Good enough."
-> 
+
+Please check rewritten text. should be a lot clearer now.
+
 > > but instead in remembering the assert record, and letting PIM continue with
 > > further processing for other flows that may result in additional assert records.
 > > PIM MUST then create PackedAssert messages from the remembered assert records
@@ -453,7 +498,9 @@ On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > > records without introducing additional delay.
 > 
 > I’m still unable to parse this with any confidence; more discussion in my revised ballot.
-> 
+
+Also rewritten. Please check -11.
+
 > >> ### Section 3.3.1, relevance of 'relevant'
 > >> 
 > >>   "Relevant" is a highly implementation dependent metric and can
@@ -643,8 +690,3 @@ On Mon, Mar 20, 2023 at 09:20:31PM +0000, John Scudder wrote:
 > Regards,
 > 
 > —John
-> 
-
--- 
----
-tte@cs.fau.de

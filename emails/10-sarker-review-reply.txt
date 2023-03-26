@@ -9,8 +9,16 @@ Subject: Re: Zaheduzzaman Sarker's No Objection on
 Reply-To: 
 In-Reply-To: <167897399409.27858.5333744764922141490@ietfa.amsl.com>
 
-
 Thanks, Zaheduzzaman,
+
+I just uploaded -11 which has resolved John Scudders DISCUSS and intends to answer
+all open COMMENTS including yours.
+
+Diff here:
+
+https://author-tools.ietf.org/iddiff?url1=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-10.txt&url2=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-11.txt&difftype=--html
+
+Wrt. your feedback:
 
 replies inline
 

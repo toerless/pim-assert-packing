@@ -9,6 +9,17 @@ Subject: Re: [pim] Éric Vyncke's No Objection on
 Reply-To: 
 In-Reply-To: <167897285612.3230.189721272161382244@ietfa.amsl.com>
 
+Thanks, Eric
+
+I just uploaded -11 which has resolved John Scudders DISCUSS and intends to answer
+all open COMMENTS including yours.
+
+Diff here:
+
+https://author-tools.ietf.org/iddiff?url1=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-10.txt&url2=https://www.ietf.org/archive/id/draft-ietf-pim-assert-packing-11.txt&difftype=--html
+
+Wrt. your feedback:
+
 On Thu, Mar 16, 2023 at 06:20:56AM -0700, Éric Vyncke via Datatracker wrote:
 > Éric Vyncke has entered the following ballot position for
 > draft-ietf-pim-assert-packing-10: No Objection
