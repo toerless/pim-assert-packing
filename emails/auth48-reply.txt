@@ -1,0 +1,950 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: rfc-editor@rfc-editor.org
+Cc: liuyisong@chinamobile.com, michael.mcbride@futurewei.com,
+	zhang.zheng@zte.com.cn, pim-ads@ietf.org, pim-chairs@ietf.org,
+	stig@venaas.com, aretana.ietf@gmail.com,
+	auth48archive@rfc-editor.org
+Bcc: 
+Subject: Re: [AD] Re: AUTH48: RFC-to-be 9466
+ <draft-ietf-pim-assert-packing-12> for your review
+Reply-To: 
+In-Reply-To: <20230914202441.0EC39E7297@rfcpa.amsl.com>
+
+Dear RFC Editor,
+
+Thanks a lot for the work. I am always baffled by the meticulousness of your work. 
+
+Changes look overall very good, except for the following:
+
+  -12 said:
+     For example various L2 technologies for rings provide sub 50
+     msec failover mechanisms, something not possible equally with an L3
+     subnet based ring.
+
+  rfc-editor-draft says:
+     For example, various L2 technologies for rings provide	
+     sub-50 msec failover mechanisms, something not possible equally with	
+     a ring based on an L3 subnet.
+
+  please fix to:
+     For example, various L2 technologies for rings provide	
+     sub-50 msec failover mechanisms, something not possible equally with	
+     a ring composed from L3 subnets.
+
+inline following.
+
+On Thu, Sep 14, 2023 at 01:24:41PM -0700, rfc-editor@rfc-editor.org wrote:
+> Authors and *AD,
+> 
+> While reviewing this document during AUTH48, please resolve (as necessary) the following questions, which are also in the XML file.
+> 
+> *AD, please review question #1.
+> 
+> 
+> 1) <!-- [rfced] *AD - Please review the diff between version 11 and version 12
+> (note that version 11 was approved for publication) and let us know if
+> you approve the following changes:
+> 
+> - change in Section 2 (L5 to L3)
+> - deleted text in Section 3.3.1
+> 
+> https://author-tools.ietf.org/iddiff?url2=draft-ietf-pim-assert-packing-12
+> -->
+> 
+> 
+> 2) <!-- [rfced] Please insert any keywords (beyond those that appear in 
+> the title) for use on https://www.rfc-editor.org/search.
+> -->
+
+ip, ipv6, multicast, performance, scalability, subnet, lan, sparse-mode, ASM, SSM
+
+> 3) <!-- [rfced] This is a question for author Zheng Zhang. Please let us know how
+> you would like your name to appear in the Authors' Addresses section for
+> this document. We will make note of your preference for future documents
+> as well.
+> 
+> This form is used in this document and 9279:
+>    Zheng(Sandy) Zhang
+> 
+> This form was used in 8916:
+>    Zheng Zhang 
+> 
+> If we keep the form with "Sandy", may we add a space before the first
+> parentheses (i.e., "Zheng (Sandy) Zhang")?
+> -->
+> 
+> 
+> 4) <!-- [rfced] Please review "PIM-SM shared LAN networks" in the following
+> sentences from the abstract and introduction and let us know if "PIM-SM"
+> is needed in this context. We see "shared LAN network" used elsewhere in
+> the document, and PIM-SM is used in the next sentence of the abstract
+> (included for context). Or should this text be updated to "When PIM-SM is
+> used in shared LAN networks" or something similar?
+> 
+> Original:
+>    In PIM-SM shared LAN networks, there is often more than one upstream
+>    router.  When PIM Sparse Mode (PIM-SM), including PIM Source
+>    Specific-Specific Multicast (PIM-SSM), is used, this can lead to
+>    duplicate IP multicast packets being forwarded by these PIM routers.
+>    ...
+>    In PIM-SM shared LAN networks, there is typically more than one
+>    upstream router.
+>    
+> Perhaps (remove "PIM-SM" from "PIM-SM shared LAN networks"):
+>    In shared LAN networks, there is often more than one upstream
+>    router.  When PIM Sparse Mode (PIM-SM), including PIM Source
+>    Specific-Specific Multicast (PIM-SSM), is used, this can lead to
+>    duplicate IP multicast packets being forwarded by these PIM routers.
+>    ..
+>    In shared LAN networks, there is typically more than one
+>    upstream router.  
+> 
+> Or (recast sentences):
+>    When PIM Sparse Mode (PIM-SM), including PIM Source Specific-Specific
+>    Multicast (PIM-SSM), is used in shared LAN networks, there is often more
+>    than one upstream router. This can lead to duplicate IP multicast packets
+>    being forwarded by these PIM routers.
+>    ..
+>    When PIM-SM is used in shared LAN networks, there is typically more than one
+>    upstream router.  
+> -->
+
+I think the recast sentence reads a bit better than just the remove "PIM-SM" option.
+Please use the recast option.
+
+> 
+> 5) <!-- [rfced] In Terminology section (i.e., Section 1.2), would you like to
+> list the abbreviations in alphabetical order? Or do you prefer the
+> current order?
+> -->
+
+I think alphabetical order would be fine (maybe better than now). Feel free
+to use, if that's normally th e editors preference.
+> 
+> 
+> 6) <!-- [rfced] Should "assert process" here be updated to "assert processing"?
+> Or is the current correct?
+> 
+> Original:
+>    ... there may be multiple upstream routers, which can cause duplicate
+>    multicast traffic to be forwarded and assert process to occur.
+> -->
+
+i guess we didn't define the (redundant) term assert process,
+so let's use assert processing.
+> 
+> 
+> 7) <!-- [rfced] Should "PIM assert small packets" here be updated to "small PIM
+> assert packets"?
+> 
+> Original:
+>    The PIM
+>    routers need to process a large number of PIM assert small packets in
+>    a very short time.  As a result, the device load is very large.  
+> 
+> Perhaps: 
+>    The PIM
+>    routers need to process a large number of small PIM assert packets in
+>    a very short time.  As a result, the device load is very large.  
+> -->
+
+Yes, please change accordingly.
+
+> 
+> 8) <!-- [rfced] Please review "something not possible equally with" here. Is the
+> intent "something not possible"?
+> 
+> Original:
+>    For example various L2 technologies for rings provide sub 50
+>    msec failover mechanisms, something not possible equally with an L3
+>    subnet based ring. 
+> -->
+
+See initial comment.
+> 
+> 9) <!-- [rfced] Please review "Assert packing introduces" here. Should this read
+> "This document introduces..."? Or something else?
+> 
+> Original:
+>    Assert packing introduces two new PIM Assert message encodings
+>    through the allocation and use of two flags in the PIM Assert message
+>    header [I-D.ietf-pim-rfc8736bis], the Packed (P) and the Aggregated
+>    (A) flags.
+> -->
+
+Yes, please change accordingly.
+> 
+> 
+> 10) <!-- [rfced] Would it be helpful to use the same phrasing at the beginning of
+> these sentences?
+> 
+> Original:
+>    If the (P)acked flag is 0, the message is a (non-packed) PIM Assert
+>    message as specified in [RFC7761].  See Section 4.2.  In this case,
+>    the (A) flag MUST be set to 0, and MUST be ignored on receipt.
+>  
+>    If the (P) flag is 1, then the message is called a PackedAssert
+>    message and the type and hence encoding format of the payload is
+>    determined by the (A) flag.
+> 
+>    If A=0, then the message body is a sequence of assert records.  This
+>    is called a "Simple PackedAssert" message.  See Section 4.3.
+> 
+>    If A=1, then the message body is a sequence of aggregated assert
+>    records.  This is called an "Aggregated PackedAssert".  See
+>    Section 4.4.
+> 
+> Perhaps:
+>    If the P flag is 0,...
+> 
+>    If the P flag is 1,...
+> 
+>    If the A flag is 0,...
+> 
+>    If the A flag is 1,...
+> 
+> Or:
+>    If P=0,...
+> 
+>    If P=1,...
+> 
+>    If A=0,...
+> 
+>    If A=1,...
+> -->
+
+Yes, consistency is always nice, and the shorter version "P=0/1"
+would fit well the desire for terseness in PIM RFCs. Please change accordingly.
+
+> 
+> 11) <!-- [rfced] Please review "RP Aggregation Records" here. Is the intended meaning "RP Aggregated Assert Records"?
+> 
+> Original:
+>    RP Aggregation Records provide a more compact encoding than the
+>    Simple PackedAssert message format for (*,G) flows.
+> 
+> Perhaps:
+>    RP Aggregated Assert Records provide a more compact encoding than the
+>    Simple PackedAssert message format for (*,G) flows.    
+> -->
+
+Yes, please fix.
+> 
+> 
+> 12) <!-- [rfced] FYI - We have updated this sentence as follows for
+> clarity. Please review.
+> 
+> Original:
+>    It is out of scope of this specification for which conditions,
+>    such as data-triggered asserts or Assert Timer (AT) expiry-
+>    triggered asserts, or under which conditions (such as high load)
+>    an implementation will send PackedAsserts instead of Asserts.
+> 
+> Perhaps: 
+>    The conditions for which (e.g., data-triggered asserts or Assert
+>    Timer (AT) expiry-triggered asserts) or under which (e.g., high
+>    load) an implementation will send PackedAsserts instead of Asserts
+>    are out of scope for this specification.
+> -->
+
+It is still a too-long "german" ( ;-)) sentence and it may not be obvious what
+context is "for which", and what context is "under which".
+
+Proposed rewrite:
+
+The protocol or system conditions for which an implementation
+wants to send PackedAsserts instead of Asserts are out of scope for this specification.
+Protocol conditions include protocol triggers such as data-triggered asserts or Assert
+Timer (AT) expiry-triggered asserts, and system conditions include
+high or low load or control plane packet reception rates.
+
+> 13) <!-- [rfced] Is "of their [RFC7761] implementation" needed here?
+> "Implementations" is used at the beginning of the sentence; perhaps it does not
+> need to be repeated. Also, please review "[RFC7761] implementation". Is
+> the intent "implementations using PIM-SM [RFC7761]" or "PIM-SM [RFC7761] implementations"?
+> 
+> Original:
+>    Implementations that introduce support for assert
+>    packing from day one of their [RFC7761] implementation MAY omit
+>    this configuration option.
+> 
+> Perhaps: 
+>    PIM-SM [RFC7761] implementations that introduce support for assert
+>    packing from day one MAY omit this configuration option.
+> -->
+
+Theree would be subtle differences in the interpretations of these sentences,
+but i was probably (unnecessarily) overthinking this.
+
+I like your textual simplification. Please use/keep.
+
+> 14) <!-- [rfced] Please review "from other reasons". Should this be updated to
+> "for other reasons", "from other sources", or something else?
+> 
+> Original:
+>    Asserts/PackedAsserts created from reception-triggered assert records
+>    should be scheduled for serialization with a higher priority than
+>    those created from other reasons.  
+> -->
+
+I guess i am just showing my lack of understanding of subtleties of the
+english language and what seems to be fixed terms. I used "from other reason"
+so that this term uses the same word "from" as "from reception-triggered".
+If the right word to say the same thing as "from reception-triggered" with "other reasons"
+is "for" instead of "from", then please replace "from" with "for".
+
+> 15) <!-- [rfced] Would it be helpful to split up this long sentence to improve readability?
+> 
+> Original:
+>    If there are one or more reception-triggered Assert/PackedAssert
+>    messages already serializing and/or scheduled to be serialized on the
+>    outgoing interface, then the router can use the time until the last
+>    of those messages will have finished serializing for PIM processing
+>    of further conditions that may result in additional reception-
+>    triggered assert records as well as packing of these assert records
+>    without introducing additional delay.
+> 
+> Perhaps: 
+>    If one or more reception-triggered Assert/PackedAssert messages are
+>    already serializing or are scheduled to be serialized on the outgoing
+>    interface, then the router can use the time until the last of those
+>    messages has finished serializing for PIM processing of further
+>    conditions. This may result in additional reception-triggered assert
+>    records and the packing of these assert records without introducing
+>    additional delay.
+> -->
+
+Sounds good, please use.
+
+> 16) <!-- [rfced] May we update "condition" to "case" or "situation" here?
+> 
+> Original:
+>    Delay in sending PackedAsserts beyond what was discussed in prior
+>    subsections can still be beneficial when it causes the overall amount
+>    of (possible) duplicate IP multicast packets to decrease in a
+>    condition with large number of (S,G) and/or (*,G), compared to the
+>    situation in which an implementation only sends Assert messages.
+> -->
+
+Sure, use same word case or situation in both occurrences. Whichever seems
+better to you.
+
+> 
+> 17) <!-- [rfced] Should the sentence starting with "Including..." be part of the
+> definition of the OptionType field?
+> 
+> Original:
+>    *  OptionType TBD: PIM Packed Assert Capability Hello Option
+> 
+>    Including the PIM OptionType TBD indicates support for the ability to
+>    receive and process all the PackedAssert encodings defined in this
+>    document.
+>    
+> Current:
+>    OptionType:  40 (Packed Assert Capability)
+> 
+>    Including the PIM OptionType 40 indicates support for the ability to
+>    receive and process all the PackedAssert encodings defined in this
+>    document.
+> 
+> Perhaps:
+>    OptionType:  40 (Packed Assert Capability). Indicates support for the
+>       ability to receive and process all the PackedAssert encodings defined
+>       in this document.
+> -->
+
+Yes, please change accordingly.
+
+> 
+> 18) <!-- [rfced] The text below Figure 1 includes a definition of the OptionType
+> field. Would it be helpful to readers to also include a definition of the
+> OptionLength field? If so, please provide the text.
+> -->
+
+Its not really IMHO a defintion of the semantic of OptionType, but only
+of value 40 of OptionType. Hence we could only write something like:
+
+* OptionLength 0: The Packet Assert Capaility has no OptionValue.
+
+No strong opinion whether this is needed. Roll a dice ;-)
+
+> 19) <!-- [rfced] Should "IP and IPv6" here be updated to "IPv4 and IPv6"? Or is
+> the current correct?
+> 
+> Original:
+>    The Encoded-Group and Encoded-Unicast address formats are
+>    specified in Section 4.9.1 of [RFC7761] for IP and IPv6.
+> -->
+
+I guess i am a fan of explicitly writing IPv4, and there are currently 17 instances
+of that in the draft, so please use IPv4.
+
+However, i fear that i may be part of some minority amongst RFC authors, and
+that most RFC use "IP" to refer to (only) IPv4. Whereas i am thinking that readers
+may not always understand this (but instead think IP could imply either IPv4 or IPv6),
+hence i avoid the term IP, unless its used in contexts where it does not matter whether
+IPv4 and/or IPv6 are implied.
+
+This seems to be some terminology question for consistency across RFCs about
+which you as RFC editors might want to have an opinion.
+
+> 
+> 20) <!-- [rfced] To avoid awkward hyphenation, we updated "non assert packing
+> capable PIM routers" to "PIM routers that are not capable of assert
+> packing". Also, please clarify "if this field was used". Can this phrase
+> be removed? Or is the intent "if this field is set to a value other than
+> zero" or something else? Note that this text appears twice in the
+> document.
+> 
+> Original:
+>    Set to zero on transmission. Serves to make non assert packing
+>    capable PIM routers fail in parsing the message instead of
+>    possible mis-parsing if this field was used.
+> -->
+
+Change is good. Maybe change
+   possible mis-parsing if this field was used
+with
+   possible mis-parsing the message as an RFC7761 assert message if this field was not zero-filled.
+
+ANd use in both places.
+
+> 21) <!-- [rfced] FYI - We moved the "P" and "A" definitions under Figure 3
+> to appear after the "7 6 5 4 3 2" definition as they are flag
+> bits. This also matches the order of the definitions under Figure 5.
+> -->
+
+Reorderings are fine. Thanks.
+
+> 22) <!-- [rfced] We have two questions about the text below.
+> 
+> - All of the definitions in the list following Figure 3 are fields in the
+> figure, except for the entry for M. M has its own entry but is also defined in
+> the last sentence of the "Assert Record" defintion. Should the entry for M be
+> removed? Or is the current okay?
+>
+> - The sentence following the "Assert Record" entry seems redundant with the
+> first sentence in the "Assert Record" definition. Please review and let us
+> know if any updates are needed.
+> 
+> Original:
+>    *  M: The number of Assert Records in the message.  Derived from the
+>       length of the packet carrying the message.
+> 
+>    *  Assert Record: formatted according to {FIG-MESSAGE-SIMPLE}}, which
+>       is the same as the PIM assert message body as specified in
+>       Section 4.9.6 of [RFC7761].  The number M of Assert Records is
+>       determined from the packet size.
+> 
+>    The format of each Assert Record is the same as the PIM assert
+>    message body as specified in Section 4.9.6 of [RFC7761].
+> 
+> Perhaps:
+>    Assert Record:
+>       Formatted according to Figure 3, which is the same as the PIM
+>       Assert message body as specified in Section 4.9.6 of [RFC7761].
+>       The number M of Assert Records is determined by the packet size.
+> -->
+
+Good catch with the duplication.
+Please remove duplication.
+
+How about to lead in with:
+
+    Assert Record [1...M]:
+
+Or
+
+    Assert Record, [M]:
+
+That way one would not have to read through all text to find M.
+Aka: quickly being ale to find M was the reason for creating an
+entry for it.
+
+Format as you like. Not worth having another discussion round for this.
+
+> 23) <!-- [rfced] FYI - In the list of definitions following Figures 6 and 7, we
+> moved the "Reserved" definition entry to correspond with the order of the
+> fields in the figure.
+> -->
+
+Ack.
+
+> 24) <!-- [rfced] In the list of definitions following Figure 8, should "Group
+> Address and Reserved" be updated to "Group Address"? The Reserved field
+> has its own entry in the list of definitions.
+> 
+> Original:
+>    *  Group Address and Reserved:
+> 
+>       As specified in Section 4.9.6 of [RFC7761].
+> 
+>    *  Reserved: Set to zero on transmission.  Ignored upon receipt.
+> 
+> Perhaps: 
+>    Group Address:
+>       As specified in Section 4.9.6 of [RFC7761].
+> 
+>    Reserved:
+>       Set to zero on transmission.  Ignored upon receipt.
+> -->
+
+Yes.
+
+> 
+> 25) <!-- [rfced] May we update "should have the Source Address 0" to "has Source
+> Address 0"?
+> 
+> Original:
+>    If this number is not 0 and one of the (*,G) assert records to
+>    be encoded should have the Source Address 0, then 0 needs to be
+>    encoded as one of the Source Address fields.
+> 
+> Perhaps: 
+>    If this number is not 0 and one of the (*,G) assert records to
+>    be encoded has Source Address 0, then 0 needs to be
+>    encoded as one of the Source Address fields.
+> -->
+
+Yes.
+
+> 26) <!-- [rfced] IANA Considerations
+> 
+> a) FYI - We updated the titles of Section 4.1 and Figure 1, as well as some
+> text in Sections 3, 3.1, and 4.1, to use the IANA-registered name "Packed
+> Assert Capability". Please review.
+> 
+> b) May we remove the row with "2-7: Unassigned" in Table 2 as these are not
+> assigned by this document? The introductory text says "IANA has assigned the
+> following two flag bits...". Also, this will change when other bits are
+> assigned in the registry in the future.
+> -->
+
+But that proposal would ignore that IANA has also changed the row
+
+    0-7: Unassigned | [RFC3973] [RFC7761] 
+
+to now
+
+    2-7: Unassigned | [RFC3973] [RFC7761] 
+    ^
+    ^
+
+How about changing the lead-in text paragraph to:
+
+IANA has updated the Assert message type section of the "PIM Message Types" registry
+as follows to include the Packed and Aggregated two flags bit.
+
+> 27) <!-- [rfced] We have a few questions about this sentence.
+> 
+> - The sentence is difficult to parse. May we recast as follows for clarity?
+> 
+> - Will it be clear to readers what "them" and "they" refer to?
+> 
+> - Please clarify "[RFC7490] with IP repair tunnels" and "[RFC7431] for IP
+> multicast". May we update to include the mechanisms defined in [RFC7490] and
+> [RFC7431]? See suggested text below.
+> 
+> Original:
+>    The mere fact that by operating at the IP layer, different solutions
+>    for IP unicast and multicast are required makes them more difficult
+>    to operate, they typically require more expensive hardware and
+>    therefore most often, they are not even available on the target
+>    equipment, such as [RFC7490] with IP repair tunnels for IP unicast or
+>    [RFC7431] for IP multicast.
+> 
+> Perhaps:
+>    When operating at the IP layer, different solutions
+>    for IP unicast and multicast are required. This makes them more difficult
+>    to operate, and they typically require more expensive hardware.
+>    Therefore, they frequently are not even available on the target
+>    equipment, such as Remote Loop-Free Alternate (LFA) Fast Reroute (FRR) [RFC7490]
+>    with IP repair tunnels for IP unicast or Multicast-only Fast
+>    Reroute (MoFRR) [RFC7431] for IP multicast.
+> -->
+
+Re-reading the text, it seems to me as if the tail-end explanation of
+RFC7490 and RFC7431 is at the wrong place. It is best included in the
+prior sentence ("If such L2 rings ...").  So, i would sugest to
+rewrite the two sentence as follows, and separarte the second out as
+a new paragraph. 
+
+If such L2 rings were to be replaced
+by L3 rings just to avoid PIM asserts, then this would result in the
+need for a complex choice of a sub-50 msec IP unicast failover
+solution, such as [RFC7490] with IP repair tunnels,
+as well as a separate sub-50 msec IP multicast failover solution,
+such as [RFC7431] with dedicated ring support.
+
+The mere fact that by running at the IP layer, different solutions
+for IP unicast and multicast are required, makes them more difficult
+to operate, they typically require more expensive hardware and
+often this leads to non-support of the IP multicast part. 
+
+> 28) <!-- [rfced] May we update "interface that is in a VRF changing" and "in a
+> same time" as follows for clarity?
+> 
+> Original:
+>    The configuration of multicast-enabled VRF (VPN
+>    routing and forwarding) or interface that is in a VRF changing may
+>    cause many assert packets to be sent in a same time.
+> 
+> Perhaps:
+>    The configuration of multicast-enabled VPN Routing and Forwarding (VRF)
+>    or changes to the interface that is in
+>    a VRF may cause many assert packets to be sent at the same
+>    time.
+
+Yes. I would also suggest s/to the interface/to an interface/.
+
+> -->
+> 
+> 
+> 29) <!-- [rfced] Are the parentheses needed with "(possible)" and "(more
+> advanced)" in these sentences? Or can they be removed?
+> 
+> Original:
+>    Delay in sending PackedAsserts beyond what was discussed in prior
+>    subsections can still be beneficial when it causes the overall amount
+>    of (possible) duplicate IP multicast packets to decrease in a
+>    condition with large number of (S,G) and/or (*,G), compared to the
+>    situation in which an implementation only sends Assert messages.
+>    ...
+>    This delay can simply be used in implementations because it can not
+>    support the (more advanced) mechanisms described above, and this
+>    longer delay can be achieved by some simpler mechanism (such as only
+>    periodic generation of PackedAsserts) and still achieves an overall
+>    reduction in duplicate IP multicast packets compared to sending only
+>    Asserts.
+
+yes. Please remove parenthesis
+
+> Also, are the parentheses needed with "(non AssertCancel)", "(non-packed)",
+> and "(not packed)" in these sentences? Or can they be removed?
+> 
+> Original:
+>    Loss of
+>    (non AssertCancel) PackedAssert impacts duplicates for all flows
+>    packed into the PackedAssert and
+>    ...
+>    As specified in
+>    Section 3.2, both flags in a (non-packed) PIM Assert message are
+>    required to be set to 0.
+>    ...
+>    If the (P)acked flag is 0, the message is a (non-packed) PIM Assert
+>    message as specified in [RFC7761].
+>    ...
+>    Instead, sending and receiving of PackedAssert
+>    messages as specified in the following subsections are logically new
+>    packetization options for assert records in addition to the (not
+>    packed) [RFC7761] Assert Message.
+> -->
+
+No, please keep these parenthsis cases.
+
+These cases remind me of the discussion
+we had in another recent RFC of mine, where an AD wanted to have some
+term that could also be misread as ambiguous to be better qualified, and
+we did this with parenthsis. Aka: in these cases, the parenthesis are
+explicitly used to incide a stronger de-ambiguation, but a term
+that we should not actually need, and that we do not want to really define.
+E.g.: "non-packed".
+
+But of course consistency, aka: replace second "not packet" with "non-packed".
+
+> 30) <!-- [rfced] Terminology
+> 
+> a) Should "metric-preference and metric" here read "Metric Preference and
+> Metric" per the usage elsewhere in the document (i.e., capitalization and no
+> hyphen)?
+> 
+> Original:
+>    The PIM assert message carries information about a single multicast
+>    source and group, along with the corresponding metric-preference and
+>    metric of the route towards the source or PIM Rendezvous Point (RP).
+> 
+> Perhaps:
+>    The PIM assert message carries information about a single multicast
+>    source and group, along with the corresponding Metric Preference and
+>    Metric of the route towards the source or PIM Rendezvous Point (RP).
+
+Yes.
+
+> b) We note inconsistencies in the terms listed below. We chose the form on the
+> right per usage in RFC 7761.  Please let us know any objections.
+> 
+> PIM assert message vs. PIM Assert message
+> 
+> assert message vs. Assert message
+
+No objections.
+
+> c) We note inconsistencies in the terms below throughout the text.  Should
+> these be uniform? If so, please let us know which form is preferred.
+> 
+> PIM Assert state vs. PIM assert state
+>    Note: We see mixed use in RFC 7761.
+> 
+> PIM Asserts vs. PIM asserts
+> 
+> Assert vs. assert (used as a noun, not in context of "Assert message", etc.)
+>    Examples:
+>    "reception of asserts"
+>    "triggered the assert"
+>    "single non-packed Assert"
+>    "instead of Asserts"
+
+Yes, please fix as you see fit. I totally struggle finding any logic
+in (non) capitalization of these term variations, so i am very happy that
+you understand this so well.
+
+> d) We see instances of both "assert record" (lowercase) and "Assert Record"
+> (capitalized) in the document. The capitalized form is consistently used in
+> the context of "Source Aggregated Assert Record" and "RP Aggregated Assert
+> Record"; the field name is also consistently capitalized (Figures 3 and
+> 5). Please review the following instances and let us know if these should
+> remain capitalized or if they should be lowercased.
+> 
+> Original:
+>    *  M: The number of Assert Records in the message.  Derived from the
+>    length of the packet carrying the message.
+>    ...
+>    The number M of Assert Records is
+>    determined from the packet size.
+>    ...
+>    The format of each Assert Record is the same as the PIM assert
+>    message body as specified in Section 4.9.6 of [RFC7761].
+
+As i said, i can not find a logic for when or when not to capitalize any
+such terms in Text, so i am trying my best to at least keep consistent. I
+always feel as if terms that are names should be capitalized, which is
+what i did in these cases, but personally i would be happier the less
+capitalization was used.
+
+Please apply your own preferences.
+
+> e) FYI - We updated "YANG model" to "YANG data model" per recent guidance from
+> Benoit Claise and the YANG Doctors.
+
+Thanks.
+   
+> -->
+> 
+> 
+> 31) <!-- [rfced] FYI, we have added expansions for the following abbreviations
+> per Section 3.6 of RFC 7322 ("RFC Style Guide"). Please review each
+> expansion in the document carefully to ensure correctness.
+> 
+>    DetNet - Deterministic Networking
+>    MVPN - Multicast VPN
+> -->
+
+Correct.
+
+> 32) <!-- [rfced] Please review the "Inclusive Language" portion of the online 
+> Style Guide <https://www.rfc-editor.org/styleguide/part2/#inclusive_language>
+> and let us know if any changes are needed.
+
+I think we're fine for this RFC.
+
+> Note that our script did not flag any words in particular, but this should 
+> still be reviewed as a best practice.
+> -->
+> 
+> 
+> Thank you.
+> 
+> RFC Editor/st/rv
+
+Thank you so much!
+
+Toerless Eckert
+
+> On Sep 14, 2023, at 1:20 PM, rfc-editor@rfc-editor.org wrote:
+> 
+> *****IMPORTANT*****
+> 
+> Updated 2023/09/14
+> 
+> RFC Author(s):
+> --------------
+> 
+> Instructions for Completing AUTH48
+> 
+> Your document has now entered AUTH48.  Once it has been reviewed and 
+> approved by you and all coauthors, it will be published as an RFC.  
+> If an author is no longer available, there are several remedies 
+> available as listed in the FAQ (https://www.rfc-editor.org/faq/).
+> 
+> You and you coauthors are responsible for engaging other parties 
+> (e.g., Contributors or Working Group) as necessary before providing 
+> your approval.
+> 
+> Planning your review 
+> ---------------------
+> 
+> Please review the following aspects of your document:
+> 
+> *  RFC Editor questions
+> 
+>   Please review and resolve any questions raised by the RFC Editor 
+>   that have been included in the XML file as comments marked as 
+>   follows:
+> 
+>   <!-- [rfced] ... -->
+> 
+>   These questions will also be sent in a subsequent email.
+> 
+> *  Changes submitted by coauthors 
+> 
+>   Please ensure that you review any changes submitted by your 
+>   coauthors.  We assume that if you do not speak up that you 
+>   agree to changes submitted by your coauthors.
+> 
+> *  Content 
+> 
+>   Please review the full content of the document, as this cannot 
+>   change once the RFC is published.  Please pay particular attention to:
+>   - IANA considerations updates (if applicable)
+>   - contact information
+>   - references
+> 
+> *  Copyright notices and legends
+> 
+>   Please review the copyright notice and legends as defined in
+>   RFC 5378 and the Trust Legal Provisions 
+>   (TLP – https://trustee.ietf.org/license-info/).
+> 
+> *  Semantic markup
+> 
+>   Please review the markup in the XML file to ensure that elements of  
+>   content are correctly tagged.  For example, ensure that <sourcecode> 
+>   and <artwork> are set correctly.  See details at 
+>   <https://authors.ietf.org/rfcxml-vocabulary>.
+> 
+> *  Formatted output
+> 
+>   Please review the PDF, HTML, and TXT files to ensure that the 
+>   formatted output, as generated from the markup in the XML file, is 
+>   reasonable.  Please note that the TXT will have formatting 
+>   limitations compared to the PDF and HTML.
+> 
+> 
+> Submitting changes
+> ------------------
+> 
+> To submit changes, please reply to this email using ‘REPLY ALL’ as all 
+> the parties CCed on this message need to see your changes. The parties 
+> include:
+> 
+>   *  your coauthors
+> 
+>   *  rfc-editor@rfc-editor.org (the RPC team)
+> 
+>   *  other document participants, depending on the stream (e.g., 
+>      IETF Stream participants are your working group chairs, the 
+>      responsible ADs, and the document shepherd).
+> 
+>   *  auth48archive@rfc-editor.org, which is a new archival mailing list 
+>      to preserve AUTH48 conversations; it is not an active discussion 
+>      list:
+> 
+>     *  More info:
+>        https://mailarchive.ietf.org/arch/msg/ietf-announce/yb6lpIGh-4Q9l2USxIAe6P8O4Zc
+> 
+>     *  The archive itself:
+>        https://mailarchive.ietf.org/arch/browse/auth48archive/
+> 
+>     *  Note: If only absolutely necessary, you may temporarily opt out 
+>        of the archiving of messages (e.g., to discuss a sensitive matter).
+>        If needed, please add a note at the top of the message that you 
+>        have dropped the address. When the discussion is concluded, 
+>        auth48archive@rfc-editor.org will be re-added to the CC list and 
+>        its addition will be noted at the top of the message. 
+> 
+> You may submit your changes in one of two ways:
+> 
+> An update to the provided XML file
+> — OR —
+> An explicit list of changes in this format
+> 
+> Section # (or indicate Global)
+> 
+> OLD:
+> old text
+> 
+> NEW:
+> new text
+> 
+> You do not need to reply with both an updated XML file and an explicit 
+> list of changes, as either form is sufficient.
+> 
+> We will ask a stream manager to review and approve any changes that seem
+> beyond editorial in nature, e.g., addition of new text, deletion of text, 
+> and technical changes.  Information about stream managers can be found in 
+> the FAQ.  Editorial changes do not require approval from a stream manager.
+> 
+> 
+> Approving for publication
+> --------------------------
+> 
+> To approve your RFC for publication, please reply to this email stating
+> that you approve this RFC for publication.  Please use ‘REPLY ALL’,
+> as all the parties CCed on this message need to see your approval.
+> 
+> 
+> Files 
+> -----
+> 
+> The files are available here:
+>   https://www.rfc-editor.org/authors/rfc9466.xml
+>   https://www.rfc-editor.org/authors/rfc9466.html
+>   https://www.rfc-editor.org/authors/rfc9466.pdf
+>   https://www.rfc-editor.org/authors/rfc9466.txt
+> 
+> Diff file of the text:
+>   https://www.rfc-editor.org/authors/rfc9466-diff.html
+>   https://www.rfc-editor.org/authors/rfc9466-rfcdiff.html (side by side)
+> 
+> Alt-diff of the text (allows you to more easily view changes 
+> where text has been deleted or moved): 
+>   https://www.rfc-editor.org/authors/rfc9466-alt-diff.html
+> 
+> Diff of the XML: 
+>   https://www.rfc-editor.org/authors/rfc9466-xmldiff1.html
+> 
+> The following files are provided to facilitate creation of your own 
+> diff files of the XML.  
+> 
+> Initial XMLv3 created using XMLv2 as input:
+>   https://www.rfc-editor.org/authors/rfc9466.original.v2v3.xml 
+> 
+> XMLv3 file that is a best effort to capture v3-related format updates 
+> only: 
+>   https://www.rfc-editor.org/authors/rfc9466.form.xml
+> 
+> 
+> Tracking progress
+> -----------------
+> 
+> The details of the AUTH48 status of your document are here:
+>   https://www.rfc-editor.org/auth48/rfc9466
+> 
+> Please let us know if you have any questions.  
+> 
+> Thank you for your cooperation,
+> 
+> RFC Editor
+> 
+> --------------------------------------
+> RFC9466 (draft-ietf-pim-assert-packing-12)
+> 
+> Title            : PIM Assert Message Packing
+> Author(s)        : Y. Liu, Ed., T. Eckert, Ed., M. McBride, Z. Zhang
+> WG Chair(s)      : Stig Venaas, Mike McBride
+> 
+> Area Director(s) : Alvaro Retana, John Scudder, Andrew Alston
+
+-- 
+---
+tte@cs.fau.de
